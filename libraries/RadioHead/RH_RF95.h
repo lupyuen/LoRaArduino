@@ -528,6 +528,12 @@ public:
     /// introduced in later versions (though we will try to avoid it).
     /// Caution: if you are using slow packet rates and long packets with RHReliableDatagram or subclasses
     /// you may need to change the RHReliableDatagram timeout for reliable operations.
+
+	////  We need:
+	////          case 1:     setCR(CR_5);        // CR = 4/5
+    ////                setSF(SF_12);       // SF = 12
+    ////                setBW(BW_125);      // BW = 125 KHz
+
     typedef enum
     {
 	Bw125Cr45Sf128 = 0,	   ///< Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on. Default medium range

@@ -17,17 +17,19 @@ RH_RF95 rf95;
 // Need this on Arduino Zero with SerialUSB port (eg RocketScream Mini Ultra Pro)
 //#define Serial SerialUSB
 
+extern int testRF95; ////
+
 void setup() 
 {
+testRF95 = 1; ////
   // Rocket Scream Mini Ultra Pro with the RFM95W only:
   // Ensure serial flash is not interfering with radio communication on SPI bus
 //  pinMode(4, OUTPUT);
-//  digitalWrite(4, HIGH);
-
+//  digitalWrite(4, HIGH);  
   Serial.begin(9600);
   while (!Serial) ; // Wait for serial port to be available
   if (!rf95.init())
-    Serial.println("init failed");
+    Serial.println("init failed");    
   // Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
 
   // The default transmitter power is 13dBm, using PA_BOOST.
@@ -45,7 +47,8 @@ void loop()
 {
   Serial.println("Sending to rf95_server");
   // Send a message to rf95_server
-  uint8_t data[] = "Hello World!";
+  // dst, src, packnum, length, data, retry
+  uint8_t data[] = "-1|-1|-1|-1";
   rf95.send(data, sizeof(data));
   
   rf95.waitPacketSent();

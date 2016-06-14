@@ -19,8 +19,8 @@ PROGMEM static const RH_RF95::ModemConfig MODEM_CONFIG_TABLE[] =
     { 0x72,   0x74,    0x00}, // Bw125Cr45Sf128 (the chip default)
     { 0x92,   0x74,    0x00}, // Bw500Cr45Sf128
     { 0x48,   0x94,    0x00}, // Bw31_25Cr48Sf512
-    { 0x78,   0xc4,    0x00}, // Bw125Cr48Sf4096
-    
+    { 0x78,   0xc4,    0x00}, // Bw125Cr48Sf4096  ///  
+
 };
 
 RH_RF95::RH_RF95(uint8_t slaveSelectPin, uint8_t interruptPin, RHGenericSPI& spi)
@@ -46,7 +46,7 @@ bool RH_RF95::init()
 #endif
 
     // No way to check the device type :-(
-    
+
     // Set sleep mode, so we can also set LORA mode:
     spiWrite(RH_RF95_REG_01_OP_MODE, RH_RF95_MODE_SLEEP | RH_RF95_LONG_RANGE_MODE);
     delay(10); // Wait for sleep mode to take over from say, CAD
@@ -60,12 +60,12 @@ bool RH_RF95::init()
     // Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr> for Teensy
     // ARM M4 requires the below. else pin interrupt doesn't work properly.
     // On all other platforms, its innocuous, belt and braces
-    pinMode(_interruptPin, INPUT); 
+    pinMode(_interruptPin, INPUT);
 
     // Set up interrupt handler
     // Since there are a limited number of interrupt glue functions isr*() available,
     // we can only support a limited number of devices simultaneously
-    // ON some devices, notably most Arduinos, the interrupt pin passed in is actuallt the 
+    // ON some devices, notably most Arduinos, the interrupt pin passed in is actuallt the
     // interrupt number. You have to figure out the interruptnumber-to-interruptpin mapping
     // yourself based on knwledge of what Arduino board you are running on.
     if (_myInterruptIndex == 0xff)
@@ -102,20 +102,31 @@ bool RH_RF95::init()
 
     // Set up default configuration
     // No Sync Words in LORA mode.
-    setModemConfig(Bw125Cr45Sf128); // Radio default
-//    setModemConfig(Bw125Cr48Sf4096); // slow and reliable?
+    ////setModemConfig(Bw125Cr45Sf128); // Radio default
+    //    setModemConfig(Bw125Cr48Sf4096); // slow and reliable?
+    setModemConfig(Bw125Cr48Sf4096);  ////  We want slow and far.
+
     setPreambleLength(8); // Default is 8
     // An innocuous ISM frequency, same as RF22's
-    setFrequency(434.0);
+    ////setFrequency(434.0);
+
+    ////uint32_t LORA_CH_10_868 = CH_10_868; //  0xD84CCC; // channel 10, central freq = 865.20MHz  ////  Lup Yuen
+    setFrequency(865.20); ////  Lup Yuen
+    ////printf("****Updated frequency to 865.20\n"); ////
+
     // Lowish power
     setTxPower(13);
 
     return true;
 }
 
+extern int testRF95; ////
+int testRF95 = -1; ////
+
+
 // C++ level interrupt handler for this instance
 // LORA is unusual in that it has several interrupt lines, and not a single, combined one.
-// On MiniWirelessLoRa, only one of the several interrupt lines (DI0) from the RFM95 is usefuly 
+// On MiniWirelessLoRa, only one of the several interrupt lines (DI0) from the RFM95 is usefuly
 // connnected to the processor.
 // We use this to get RxDone and TxDone interrupts
 void RH_RF95::handleInterrupt()
@@ -143,16 +154,16 @@ void RH_RF95::handleInterrupt()
 	_lastRssi = spiRead(RH_RF95_REG_1A_PKT_RSSI_VALUE) - 137;
 
 	// We have received a message.
-	validateRxBuf(); 
+	validateRxBuf();
 	if (_rxBufValid)
-	    setModeIdle(); // Got one 
+	    setModeIdle(); // Got one
     }
     else if (_mode == RHModeTx && irq_flags & RH_RF95_TX_DONE)
     {
 	_txGood++;
 	setModeIdle();
     }
-    
+
     spiWrite(RH_RF95_REG_12_IRQ_FLAGS, 0xff); // Clear all IRQ flags
 }
 
@@ -242,6 +253,11 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
     spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFrom);
     spiWrite(RH_RF95_REG_00_FIFO, _txHeaderId);
     spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFlags);
+    ////spiWrite(RH_RF95_REG_00_FIFO, 1); //// dst
+    ////spiWrite(RH_RF95_REG_00_FIFO, 2); //// src
+    ////spiWrite(RH_RF95_REG_00_FIFO, 0); //// count
+    ////spiWrite(RH_RF95_REG_00_FIFO, 4); //// len
+
     // The message data
     spiBurstWrite(RH_RF95_REG_00_FIFO, data, len);
     spiWrite(RH_RF95_REG_22_PAYLOAD_LENGTH, len + RH_RF95_HEADER_LEN);
@@ -391,4 +407,3 @@ void RH_RF95::setPreambleLength(uint16_t bytes)
     spiWrite(RH_RF95_REG_20_PREAMBLE_MSB, bytes >> 8);
     spiWrite(RH_RF95_REG_21_PREAMBLE_LSB, bytes & 0xff);
 }
-
