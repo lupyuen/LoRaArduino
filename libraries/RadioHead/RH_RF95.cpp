@@ -274,7 +274,7 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
     ////spiWrite(RH_RF95_REG_00_FIFO, 1); //// dst
     ////spiWrite(RH_RF95_REG_00_FIFO, 2); //// src
     ////spiWrite(RH_RF95_REG_00_FIFO, 0); //// count
-    ////spiWrite(RH_RF95_REG_00_FIFO, 4); //// len
+    ////spiWrite(RH_RF95_REG_00_FIFO, 7); //// len
 
     // The message data
     spiBurstWrite(RH_RF95_REG_00_FIFO, data, len);

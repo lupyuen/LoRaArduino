@@ -55,12 +55,16 @@ testRF95 = 1; ////
 
 void loop()
 {
-  Serial.println("Sending to rf95_server");
   // Send a message to rf95_server
   // dst, src, packnum, length, data, retry
-  uint8_t data[] = "1|2|3|4";
-  rf95.setHeaderFlags(sizeof(data));  //  TP-IoT: Byte 4 of header is the message length.
-  rf95.send(data, sizeof(data));
+  //uint8_t data[] = "1|2|3|4";
+  uint8_t data[] = { 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x00 };
+  Serial.print("Sending to rf95_server: ");
+  Serial.print(sizeof(data));
+  Serial.print(" / ");
+  Serial.println((char *) data);
+  rf95.setHeaderFlags(sizeof(data), 0xff);  //  TP-IoT: Byte 4 of header is the message length. 0xff will clear all bits.
+  rf95.send(data, sizeof(data));  //  Last byte is 0, don't send it.
   
   rf95.waitPacketSent();
   // Now wait for a reply
