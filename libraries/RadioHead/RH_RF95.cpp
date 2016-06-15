@@ -126,8 +126,8 @@ bool RH_RF95::init()
     // An innocuous ISM frequency, same as RF22's
     ////setFrequency(434.0);
 
-    ////uint32_t LORA_CH_10_868 = CH_10_868; //  0xD84CCC; // channel 10, central freq = 865.20MHz  ////  Lup Yuen
-    setFrequency(865.20); ////  Lup Yuen
+    ////  TP-IoT: uint32_t LORA_CH_10_868 = CH_10_868; //  0xD84CCC; // channel 10, central freq = 865.20MHz  ////  Lup Yuen
+    setFrequency(865.20); ////  TP-IoT
     ////printf("****Updated frequency to 865.20\n"); ////
 
     // Lowish power
@@ -136,8 +136,8 @@ bool RH_RF95::init()
     return true;
 }
 
-extern int testRF95; ////
-int testRF95 = -1; ////
+extern int testRF95; ////  TP-IoT
+int testRF95 = -1; ////  TP-IoT
 
 
 // C++ level interrupt handler for this instance
@@ -265,15 +265,15 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
     // Position at the beginning of the FIFO
     spiWrite(RH_RF95_REG_0D_FIFO_ADDR_PTR, 0);
     // The headers
-    ////spiWrite(RH_RF95_REG_00_FIFO, _txHeaderTo);
-    ////spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFrom);
-    ////spiWrite(RH_RF95_REG_00_FIFO, _txHeaderId);
-    ////spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFlags);
+    spiWrite(RH_RF95_REG_00_FIFO, _txHeaderTo);
+    spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFrom);
+    spiWrite(RH_RF95_REG_00_FIFO, _txHeaderId);
+    spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFlags);
     ////  TP-IoT:
-    spiWrite(RH_RF95_REG_00_FIFO, 1); //// dst
-    spiWrite(RH_RF95_REG_00_FIFO, 2); //// src
-    spiWrite(RH_RF95_REG_00_FIFO, 0); //// count
-    spiWrite(RH_RF95_REG_00_FIFO, 4); //// len
+    ////spiWrite(RH_RF95_REG_00_FIFO, 1); //// dst
+    ////spiWrite(RH_RF95_REG_00_FIFO, 2); //// src
+    ////spiWrite(RH_RF95_REG_00_FIFO, 0); //// count
+    ////spiWrite(RH_RF95_REG_00_FIFO, 4); //// len
 
     // The message data
     spiBurstWrite(RH_RF95_REG_00_FIFO, data, len);

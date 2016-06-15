@@ -540,7 +540,7 @@ public:
 	////    case 1:     setCR(CR_5);        // CR = 4/5
     ////                setSF(SF_12);       // SF = 12
     ////                setBW(BW_125);      // BW = 125 KHz
-	Bw125Cr45Sf4096,           ///< Bw = 125 kHz, Cr = 4/5, Sf = 4096chips/symbol, CRC on. Slow+long range
+	Bw125Cr45Sf4096,           ///  TP-IoT: < Bw = 125 kHz, Cr = 4/5, Sf = 4096chips/symbol, CRC on. Slow+long range
 
     } ModemConfigChoice;
 
