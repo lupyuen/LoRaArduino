@@ -10,6 +10,10 @@
 #include <SPI.h>
 #include <RH_RF95.h>
 
+////  TP-IoT
+const int device_address = 3;  //  My own address.
+const int gateway_address = 1;  //  Gateway address.
+
 // Singleton instance of the radio driver
 RH_RF95 rf95;
 //RH_RF95 driver(5, 2); // Rocket Scream Mini Ultra Pro with the RFM95W
@@ -41,6 +45,12 @@ testRF95 = 1; ////
   // then you can configure the power transmitter power for -1 to 14 dBm and with useRFO true. 
   // Failure to do that will result in extremely low transmit powers.
 //  driver.setTxPower(14, true);
+
+  ////  TP-IoT
+  rf95.setThisAddress(device_address);
+  rf95.setHeaderFrom(device_address);
+  rf95.setHeaderTo(gateway_address);
+  rf95.setHeaderId(0);  //  TP-IoT: Byte 3 of header is the message counter.
 }
 
 void loop()
@@ -48,7 +58,8 @@ void loop()
   Serial.println("Sending to rf95_server");
   // Send a message to rf95_server
   // dst, src, packnum, length, data, retry
-  uint8_t data[] = "-1|-1|-1|-1";
+  uint8_t data[] = "1|2|3|4";
+  rf95.setHeaderFlags(sizeof(data));  //  TP-IoT: Byte 4 of header is the message length.
   rf95.send(data, sizeof(data));
   
   rf95.waitPacketSent();
@@ -73,7 +84,7 @@ void loop()
   }
   else
   {
-    Serial.println("No reply, is rf95_server running?");
+    Serial.println("No reply");
   }
   delay(400);
 }

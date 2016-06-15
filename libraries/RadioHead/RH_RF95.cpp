@@ -132,6 +132,7 @@ bool RH_RF95::init()
 
     // Lowish power
     setTxPower(13);
+    ////  TP-IoT: TODO: Set power.
 
     return true;
 }
