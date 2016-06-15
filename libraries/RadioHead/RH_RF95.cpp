@@ -20,7 +20,19 @@ PROGMEM static const RH_RF95::ModemConfig MODEM_CONFIG_TABLE[] =
     { 0x92,   0x74,    0x00}, // Bw500Cr45Sf128
     { 0x48,   0x94,    0x00}, // Bw31_25Cr48Sf512
     { 0x78,   0xc4,    0x00}, // Bw125Cr48Sf4096  ///  
-
+	////  TP-IoT Gateway runs on:
+	////    case 1:     setCR(CR_5);        // CR = 4/5
+    ////                setSF(SF_12);       // SF = 12
+    ////                setBW(BW_125);      // BW = 125 KHz
+    ////Starting 'setSF'
+	////## Writing:  ## Register 1:  81
+	////## Writing:  ## Register 31:  3
+	////## Writing:  ## Register 37:  A
+	////## Writing:  ## Register 1D:  4B
+	////## Writing:  ## Register 1E:  C7
+	////## Writing:  ## Register 1:  81
+    ////{ 0x4b,   0xc7,    0x00}, // Bw125Cr45Sf4096
+    { 0x72,   0xc4,    0x00}, // TP-IoT: Bw125Cr45Sf4096
 };
 
 RH_RF95::RH_RF95(uint8_t slaveSelectPin, uint8_t interruptPin, RHGenericSPI& spi)
@@ -103,8 +115,12 @@ bool RH_RF95::init()
     // Set up default configuration
     // No Sync Words in LORA mode.
     ////setModemConfig(Bw125Cr45Sf128); // Radio default
-    //    setModemConfig(Bw125Cr48Sf4096); // slow and reliable?
-    setModemConfig(Bw125Cr48Sf4096);  ////  We want slow and far.
+    ////setModemConfig(Bw125Cr48Sf4096); // slow and reliable?
+	////  TP-IoT Gateway runs on:
+	////    case 1:     setCR(CR_5);        // CR = 4/5
+    ////                setSF(SF_12);       // SF = 12
+    ////                setBW(BW_125);      // BW = 125 KHz
+    setModemConfig(Bw125Cr45Sf4096);  ////  TP-IoT
 
     setPreambleLength(8); // Default is 8
     // An innocuous ISM frequency, same as RF22's
@@ -249,14 +265,15 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
     // Position at the beginning of the FIFO
     spiWrite(RH_RF95_REG_0D_FIFO_ADDR_PTR, 0);
     // The headers
-    spiWrite(RH_RF95_REG_00_FIFO, _txHeaderTo);
-    spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFrom);
-    spiWrite(RH_RF95_REG_00_FIFO, _txHeaderId);
-    spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFlags);
-    ////spiWrite(RH_RF95_REG_00_FIFO, 1); //// dst
-    ////spiWrite(RH_RF95_REG_00_FIFO, 2); //// src
-    ////spiWrite(RH_RF95_REG_00_FIFO, 0); //// count
-    ////spiWrite(RH_RF95_REG_00_FIFO, 4); //// len
+    ////spiWrite(RH_RF95_REG_00_FIFO, _txHeaderTo);
+    ////spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFrom);
+    ////spiWrite(RH_RF95_REG_00_FIFO, _txHeaderId);
+    ////spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFlags);
+    ////  TP-IoT:
+    spiWrite(RH_RF95_REG_00_FIFO, 1); //// dst
+    spiWrite(RH_RF95_REG_00_FIFO, 2); //// src
+    spiWrite(RH_RF95_REG_00_FIFO, 0); //// count
+    spiWrite(RH_RF95_REG_00_FIFO, 4); //// len
 
     // The message data
     spiBurstWrite(RH_RF95_REG_00_FIFO, data, len);

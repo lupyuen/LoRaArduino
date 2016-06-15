@@ -529,17 +529,19 @@ public:
     /// Caution: if you are using slow packet rates and long packets with RHReliableDatagram or subclasses
     /// you may need to change the RHReliableDatagram timeout for reliable operations.
 
-	////  We need:
-	////          case 1:     setCR(CR_5);        // CR = 4/5
-    ////                setSF(SF_12);       // SF = 12
-    ////                setBW(BW_125);      // BW = 125 KHz
-
     typedef enum
     {
 	Bw125Cr45Sf128 = 0,	   ///< Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on. Default medium range
 	Bw500Cr45Sf128,	           ///< Bw = 500 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on. Fast+short range
 	Bw31_25Cr48Sf512,	   ///< Bw = 31.25 kHz, Cr = 4/8, Sf = 512chips/symbol, CRC on. Slow+long range
 	Bw125Cr48Sf4096,           ///< Bw = 125 kHz, Cr = 4/8, Sf = 4096chips/symbol, CRC on. Slow+long range
+
+	////  TP-IoT Gateway runs on:
+	////    case 1:     setCR(CR_5);        // CR = 4/5
+    ////                setSF(SF_12);       // SF = 12
+    ////                setBW(BW_125);      // BW = 125 KHz
+	Bw125Cr45Sf4096,           ///< Bw = 125 kHz, Cr = 4/5, Sf = 4096chips/symbol, CRC on. Slow+long range
+
     } ModemConfigChoice;
 
     /// Constructor. You can have multiple instances, but each instance must have its own
