@@ -33,7 +33,8 @@ PROGMEM static const RH_RF95::ModemConfig MODEM_CONFIG_TABLE[] =
 	////## Writing:  ## Register 1E:  C7
 	////## Writing:  ## Register 1:  81
     //{ 0x72,   0xc4,    0x00} // TP-IoT: Bw125Cr45Sf4096, derived from above
-    { 0x72,   0xc7,    0x00} // TP-IoT: Bw125Cr45Sf4096, copied from output log
+    { 0x70,   0xc4,    0x00} // TP-IoT: Bw125Cr45Sf4096, no CRC on receipt
+    //{ 0x72,   0xc7,    0x00} // TP-IoT: Bw125Cr45Sf4096, copied from output log
     ////{ RH_RF95_BW_125KHZ + RH_RF95_CODING_RATE_4_5, RH_RF95_SPREADING_FACTOR_4096CPS + RH_RF95_AGC_AUTO_ON,  0x00 } // TP-IoT: Bw125Cr45Sf4096
     ////{ 0x4a,   0x97,    0x00} // TP-IoT: Bw125Cr45Sf4096, copied from Libelium
 };
@@ -137,12 +138,7 @@ bool RH_RF95::init()
     setTxPower(13);
     ////  TP-IoT: TODO: Set power.
 
-    ////  TP-IoT: Tell gateway to skip CRC check.
-    Serial.print("***Before RH_RF95_REG_1C_HOP_CHANNEL: 0x");
-    Serial.println(spiRead(RH_RF95_REG_1C_HOP_CHANNEL), HEX);
-    ////spiWrite(RH_RF95_REG_1C_HOP_CHANNEL, 0);
-    Serial.print("***After RH_RF95_REG_1C_HOP_CHANNEL: 0x");
-    Serial.println(spiRead(RH_RF95_REG_1C_HOP_CHANNEL), HEX);
+    ////  TP-IoT: TODO: Tell gateway to skip CRC check.
 
     ////  TP-IoT: Patch registers based on values from SX1272.
     spiWrite(0x8, 0xCC);  //  RegFrLsb. Must be set in idle mode.
@@ -276,12 +272,9 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
     if (len > RH_RF95_MAX_MESSAGE_LEN)
 	return false;
 
-    waitPacketSent(); // Make sure we dont interrupt an outgoing message
-    setModeIdle();
-
     ////  TP-IoT:
-	Serial.print("*** _txHeaderFlags: ");
-	Serial.println(_txHeaderFlags);
+	Serial.print("*** _txHeaderFlags: 0x");
+	Serial.println(_txHeaderFlags, HEX);
 #ifdef DUMP_REGISTERS
 	for (int i = 0; i <= 0x3f; i++) {
 	    Serial.print("Reg[0x");
@@ -291,6 +284,9 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
 	    Serial.println("");
 	}
 #endif
+
+    waitPacketSent(); // Make sure we dont interrupt an outgoing message
+    setModeIdle();
 
     // Position at the beginning of the FIFO
     spiWrite(RH_RF95_REG_0D_FIFO_ADDR_PTR, 0);
@@ -309,13 +305,20 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
 #endif
 
     // The message data
-#define ORIGINAL_BURST_WRITE
+//#define ORIGINAL_BURST_WRITE
 #ifdef ORIGINAL_BURST_WRITE
     spiBurstWrite(RH_RF95_REG_00_FIFO, data, len);
     spiWrite(RH_RF95_REG_22_PAYLOAD_LENGTH, len + RH_RF95_HEADER_LEN);
 #else
     ////  TP-IoT
-    for (int i = 0; i < len; i++) spiWrite(RH_RF95_REG_00_FIFO, data[i]);
+    for (int i = 0; i < len; i++) {
+	    Serial.print("FIFO[0x");
+	    Serial.print(i, HEX);
+	    Serial.print("] = 0x");
+	    Serial.print(data[i], HEX);
+	    Serial.println("");
+        spiWrite(RH_RF95_REG_00_FIFO, data[i]);
+    }
     spiWrite(RH_RF95_REG_22_PAYLOAD_LENGTH, len + RH_RF95_HEADER_LEN);
 #endif
 
