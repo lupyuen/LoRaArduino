@@ -26,7 +26,7 @@
 // Includes
 //**********************************************************************
 #include "arduinoLoRa.h"
-#include "../SPI/SPI.h"
+#include <SPI.h>
 #include "../arduino-api/arduinoMultiprotocol.h"
 #include "../arduino-api/arduinoUtils.h"
 

@@ -23,13 +23,19 @@
  */
 
 #include <Wire.h>
-
 // Cooking API libraries
 #include <arduinoUtils.h>
-
 // Include the SX1272 and SPI library:
 #include "arduinoLoRa.h"
 #include <SPI.h>
+
+//  TP-IoT
+const int device_address = 4;  //  Must be unique for each device.
+const int gateway_address = 1;
+const int transmission_mode = 1;  //  Max range, slow data rate.
+//const int transmission_channel = CH_10_868;
+const char transmission_power = 'H';
+const int receive_timeout = 10000;
 
 int e;
 
@@ -50,7 +56,7 @@ void setup()
   Serial.println(e, DEC);
   
   // Set transmission mode and print the result
-  e |= sx1272.setMode(4);
+  e |= sx1272.setMode(transmission_mode);
   Serial.print(F("Setting Mode: state "));
   Serial.println(e, DEC);
   
@@ -70,12 +76,12 @@ void setup()
   Serial.println(e, DEC);
   
   // Select output power (Max, High or Low)
-  e |= sx1272.setPower('H');
+  e |= sx1272.setPower(transmission_power);
   Serial.print(F("Setting Power: state "));
   Serial.println(e, DEC);
   
   // Set the node address and print the result
-  e |= sx1272.setNodeAddress(3);
+  e |= sx1272.setNodeAddress(device_address);
   Serial.print(F("Setting node address: state "));
   Serial.println(e, DEC);
   
@@ -89,7 +95,7 @@ void setup()
 void loop(void)
 {
   // Send message1 and print the result
-  e = sx1272.sendPacketTimeout(8, message1);
+  e = sx1272.sendPacketTimeout(gateway_address, message1);
   Serial.print(F("Packet sent, state "));
   Serial.println(e, DEC);
 
