@@ -36,11 +36,7 @@ const int transmission_mode = 1;  //  Max range, slow data rate.
 //const int transmission_channel = CH_10_868;
 const char transmission_power = 'H';
 const int receive_timeout = 10000;
-
-int e;
-
-char message1 [] = "Packet 1, wanting to see if received packet is the same as sent packet";
-char message2 [] = "Packet 2, broadcast test";
+char message [] = "4|1|2|3";
 
 void setup()
 {
@@ -51,7 +47,7 @@ void setup()
   Serial.println(F("SX1272 module and Arduino: send packets without ACK"));
   
   // Power ON the module
-  e = sx1272.ON();
+  int e = sx1272.ON();
   Serial.print(F("Setting power ON: state "));
   Serial.println(e, DEC);
   
@@ -95,17 +91,10 @@ void setup()
 void loop(void)
 {
   // Send message1 and print the result
-  e = sx1272.sendPacketTimeout(gateway_address, message1);
+  int e = sx1272.sendPacketTimeout(gateway_address, message);
   Serial.print(F("Packet sent, state "));
   Serial.println(e, DEC);
 
-  delay(4000);  
-
-  // Send message2 broadcast and print the result
-  e = sx1272.sendPacketTimeout(0, message2);
-  Serial.print(F("Packet sent, state "));
-  Serial.println(e, DEC);
-
-  delay(4000);  
+  delay(10000);  
 }
 
