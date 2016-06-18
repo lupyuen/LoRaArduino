@@ -1,0 +1,109 @@
+#######################################
+# Syntax Coloring Map For LoRa
+#######################################
+
+#######################################
+# Class (KEYWORD3)
+#######################################
+
+LoRa	KEYWORD3
+SX12712	KEYWORD3
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+arduinoLoRa	KEYWORD2
+arduinoClasses	KEYWORD2
+arduinoUART	KEYWORD2
+arduinoUtils	KEYWORD2
+
+_bandwidth	KEYWORD2
+_codingRate	KEYWORD2
+_spreadingFactor	KEYWORD2
+_channel	KEYWORD2
+_power	KEYWORD2
+_SNR	KEYWORD2
+_RSSI	KEYWORD2
+_RSSIpacket	KEYWORD2
+_preamblelength	KEYWORD2
+_payloadlength	KEYWORD2
+_nodeAddress	KEYWORD2
+_header	KEYWORD2
+_hreceived	KEYWORD2
+_CRC	KEYWORD2
+_destination	KEYWORD2
+_packetNumber	KEYWORD2
+_reception	KEYWORD2
+_retries	KEYWORD2
+_maxRetries	KEYWORD2
+_maxCurrent	KEYWORD2
+_modem	KEYWORD2
+_packet_sent	KEYWORD2
+_packet_received	KEYWORD2
+_temp	KEYWORD2
+_sendTime	KEYWORD2
+ACK	KEYWORD2
+ON	KEYWORD2
+OFF	KEYWORD2
+readRegister	KEYWORD2
+writeRegister	KEYWORD2
+clearFlags	KEYWORD2
+setLORA	KEYWORD2
+setFSK	KEYWORD2
+getMode	KEYWORD2
+setMode	KEYWORD2
+getHeader	KEYWORD2
+setHeaderON	KEYWORD2
+setHeaderOFF	KEYWORD2
+getCRC	KEYWORD2
+setCRC_ON	KEYWORD2
+setCRC_OFF	KEYWORD2
+isSF	KEYWORD2
+getSF	KEYWORD2
+isBW	KEYWORD2
+setBW	KEYWORD2
+isCR	KEYWORD2
+getCR	KEYWORD2
+setCR	KEYWORD2
+isChannel	KEYWORD2
+getChannel	KEYWORD2
+setChannel	KEYWORD2
+getPower	KEYWORD2
+setPower	KEYWORD2
+setPowerNum	KEYWORD2
+getPreambleLength	KEYWORD2
+setPreamblelenght	KEYWORD2
+getPayloadLength	KEYWORD2
+setPacketLength	KEYWORD2
+getNodeAddress	KEYWORD2
+setNodeAddress	KEYWORD2
+getSNR	KEYWORD2
+getRSSI	KEYWORD2
+getRSSIpacket	KEYWORD2
+setRetries	KEYWORD2
+getMaxCurrent	KEYWORD2
+setMaxCurrent	KEYWORD2
+getRegs	KEYWORD2
+truncPayLoad	KEYWORD2
+setACK	KEYWORD2
+receive	KEYWORD2
+receivePacketMAXTimeout	KEYWORD2
+receivePacketTimeout	KEYWORD2
+receivePacketMAXTimeoutACK	KEYWORD2
+receivePacketTimeoutACK	KEYWORD2
+receiveAll	KEYWORD2
+availableData	KEYWORD2
+setPacket	KEYWORD2
+getPacketMAXTimeout	KEYWORD2
+getPacket	KEYWORD2
+sendWithMAXTimeout	KEYWORD2
+sendWithTimeout	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+LORA_ANSWER_OK	LITERAL1
+LORA_ANSWER_ERROR	LITERAL1
+LORA_NO_ANSWER	LITERAL1

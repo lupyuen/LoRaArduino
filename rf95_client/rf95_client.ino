@@ -57,8 +57,8 @@ void loop()
 {
   // Send a message to rf95_server
   // dst, src, packnum, length, data, retry
-  uint8_t data[] = "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20";
-  //uint8_t data[] = { 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x00 };
+  //uint8_t data[] = "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20";
+  uint8_t data[] = { 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x00 };
   Serial.print("Sending to rf95_server: ");
   Serial.print(sizeof(data));
   Serial.print(" / ");

@@ -1,0 +1,39 @@
+#############################################
+# Syntax Coloring Map For arduino-api
+#############################################
+
+#############################################
+# Constants (LITERAL1)
+#############################################
+Utils	KEYWORD1
+
+#############################################
+# Methods and Functions (KEYWORD2)
+#############################################
+hex2str	KEYWORD2
+setMuxSocket0	KEYWORD2
+setMuxSocket1	KEYWORD2
+setMuxUSB	KEYWORD2
+
+multiprotocolBegin	KEYWORD2
+disableMUX	KEYWORD2
+
+setMUXSocket0	KEYWORD2
+setONSocket0	KEYWORD2
+setOFFSocket0	KEYWORD2
+setCSSocket0	KEYWORD2
+unsetCSSocket0	KEYWORD2
+
+setMUXSocket1	KEYWORD2
+setONSocket1	KEYWORD2
+setOFFSocket1	KEYWORD2
+setCSSocket1	KEYWORD2
+unsetCSSocket1	KEYWORD2
+
+#############################################
+# Class (KEYWORD3)
+#############################################
+arduinoUART	KEYWORD3
+arduinoUtils	KEYWORD3
+arduinoClasses	KEYWORD3
+

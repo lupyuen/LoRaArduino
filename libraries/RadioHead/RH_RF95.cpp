@@ -32,8 +32,9 @@ PROGMEM static const RH_RF95::ModemConfig MODEM_CONFIG_TABLE[] =
 	////## Writing:  ## Register 1E:  C7
 	////## Writing:  ## Register 1:  81
     ////{ 0x4b,   0xc7,    0x00}, // Bw125Cr45Sf4096
-    ////{ 0x72 + RH_RF95_IMPLICIT_HEADER_MODE_ON,   0xc4,    0x00}, // TP-IoT: Bw125Cr45Sf4096
-    { 0x70 + RH_RF95_IMPLICIT_HEADER_MODE_ON,   0xc4,    0x00}, // TP-IoT: Bw125Cr45Sf4096
+    { 0x72,   0xc4,    0x00} // TP-IoT: Bw125Cr45Sf4096
+    ////{ 0x70 + RH_RF95_IMPLICIT_HEADER_MODE_ON,   0xc4,    0x00}, // TP-IoT: Bw125Cr45Sf4096
+    ////{ RH_RF95_BW_125KHZ + RH_RF95_CODING_RATE_4_5, RH_RF95_SPREADING_FACTOR_4096CPS + RH_RF95_AGC_AUTO_ON,  0x00 } // TP-IoT: Bw125Cr45Sf4096
 };
 
 RH_RF95::RH_RF95(uint8_t slaveSelectPin, uint8_t interruptPin, RHGenericSPI& spi)
@@ -264,28 +265,31 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
     waitPacketSent(); // Make sure we dont interrupt an outgoing message
     setModeIdle();
 
+    ////  TP-IoT:
+	Serial.print("*** _txHeaderFlags: ");
+	Serial.println(_txHeaderFlags);
+
     // Position at the beginning of the FIFO
     spiWrite(RH_RF95_REG_0D_FIFO_ADDR_PTR, 0);
     // The headers
+#ifdef ORIGINAL_HEADER
     spiWrite(RH_RF95_REG_00_FIFO, _txHeaderTo);
     spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFrom);
     spiWrite(RH_RF95_REG_00_FIFO, _txHeaderId);
     spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFlags);
+#else
     ////  TP-IoT:
-	Serial.print("*** _txHeaderFlags: ");
-	Serial.println(_txHeaderFlags);
-    ////  TP-IoT:
-    ////spiWrite(RH_RF95_REG_00_FIFO, 1); //// dst
-    ////spiWrite(RH_RF95_REG_00_FIFO, 2); //// src
-    ////spiWrite(RH_RF95_REG_00_FIFO, 0); //// count
-    ////spiWrite(RH_RF95_REG_00_FIFO, 7); //// len
+    spiWrite(RH_RF95_REG_00_FIFO, 1); //// dst
+    spiWrite(RH_RF95_REG_00_FIFO, 3); //// src
+    spiWrite(RH_RF95_REG_00_FIFO, 0); //// count
+    spiWrite(RH_RF95_REG_00_FIFO, 7); //// len
+#endif
 
     // The message data
-    ////spiBurstWrite(RH_RF95_REG_00_FIFO, data, len);  ////  TP-IoT
-    ////spiWrite(RH_RF95_REG_22_PAYLOAD_LENGTH, len + RH_RF95_HEADER_LEN);  ////  TP-IoT
+    //spiBurstWrite(RH_RF95_REG_00_FIFO, data, len);  ////  TP-IoT
+    //spiWrite(RH_RF95_REG_22_PAYLOAD_LENGTH, len + RH_RF95_HEADER_LEN);  ////  TP-IoT
     ////  TP-IoT
-    for (int i = 0; i < len; i++)
-        spiWrite(RH_RF95_REG_00_FIFO, data[i]);
+    for (int i = 0; i < len; i++) spiWrite(RH_RF95_REG_00_FIFO, data[i]);
 
     setModeTx(); // Start the transmitter
     // when Tx is done, interruptHandler will fire and radio mode will return to STANDBY
