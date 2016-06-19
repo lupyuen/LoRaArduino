@@ -174,10 +174,15 @@
 
 // RH_RF95_REG_1C_HOP_CHANNEL                         0x1c
 #define RH_RF95_PLL_TIMEOUT                           0x80
+////  TP-IoT: This is wrong. See http://www.hoperf.com/upload/rf/RFM95_96_97_98W.pdf
+#ifdef ORIGINAL_CONFIG
 #define RH_RF95_RX_PAYLOAD_CRC_IS_ON                  0x40
+#endif  //  ORIGINAL_CONFIG
 #define RH_RF95_FHSS_PRESENT_CHANNEL                  0x3f
 
 // RH_RF95_REG_1D_MODEM_CONFIG1                       0x1d
+////  TP-IoT: This is wrong. See http://www.hoperf.com/upload/rf/RFM95_96_97_98W.pdf
+#ifdef ORIGINAL_CONFIG1
 #define RH_RF95_BW                                    0xc0
 #define RH_RF95_BW_125KHZ                             0x00
 #define RH_RF95_BW_250KHZ                             0x40
@@ -191,6 +196,7 @@
 #define RH_RF95_IMPLICIT_HEADER_MODE_ON               0x04
 #define RH_RF95_RX_PAYLOAD_CRC_ON                     0x02
 #define RH_RF95_LOW_DATA_RATE_OPTIMIZE                0x01
+#endif  //  ORIGINAL_CONFIG1
 
 // RH_RF95_REG_1E_MODEM_CONFIG2                       0x1e
 #define RH_RF95_SPREADING_FACTOR                      0xf0
@@ -202,7 +208,10 @@
 #define RH_RF95_SPREADING_FACTOR_2048CPS              0xb0
 #define RH_RF95_SPREADING_FACTOR_4096CPS              0xc0
 #define RH_RF95_TX_CONTINUOUS_MOE                     0x08
+////  TP-IoT: This is wrong. See http://www.hoperf.com/upload/rf/RFM95_96_97_98W.pdf
+#ifdef ORIGINAL_CONFIG2
 #define RH_RF95_AGC_AUTO_ON                           0x04
+#endif  //  ORIGINAL_CONFIG2
 #define RH_RF95_SYM_TIMEOUT_MSB                       0x03
 
 // RH_RF95_REG_4D_PA_DAC                              0x4d
@@ -540,7 +549,13 @@ public:
 	////    case 1:     setCR(CR_5);        // CR = 4/5
     ////                setSF(SF_12);       // SF = 12
     ////                setBW(BW_125);      // BW = 125 KHz
-	Bw125Cr45Sf4096,           ///  TP-IoT: < Bw = 125 kHz, Cr = 4/5, Sf = 4096chips/symbol, CRC on. Slow+long range
+	Bw125Cr45Sf4096,           ////  TP-IoT: < Bw = 125 kHz, Cr = 4/5, Sf = 4096chips/symbol, CRC on. Slow+long range
+
+	////  Testing TP-IoT Gateway on mode 5 (better reach, medium time on air)
+    ////    case 5:     setCR(CR_5);        // CR = 4/5
+    ////                setSF(SF_10);       // SF = 10
+    ////                setBW(BW_250);      // BW = 250 KHz -> 0x80
+    Bw250Cr45Sf1024,           ////  TP-IoT
 
     } ModemConfigChoice;
 

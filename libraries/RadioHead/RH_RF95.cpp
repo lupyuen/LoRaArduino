@@ -11,6 +11,13 @@
 RH_RF95* RH_RF95::_deviceForInterrupt[RH_RF95_NUM_INTERRUPTS] = {0, 0, 0};
 uint8_t RH_RF95::_interruptCount = 0; // Index into _deviceForInterrupt for next device
 
+//  Fixed constants according to http://www.hoperf.com/upload/rf/RFM95_96_97_98W.pdf
+const int FIXED_RH_RF95_BW_125KHZ                             = 0x70;
+const int FIXED_RH_RF95_BW_250KHZ                             = 0x80;
+const int FIXED_RH_RF95_CODING_RATE_4_5                       = 0x02;
+const int FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON                  = 0x04;
+
+
 // These are indexed by the values of ModemConfigChoice
 // Stored in flash (program) memory to save SRAM
 PROGMEM static const RH_RF95::ModemConfig MODEM_CONFIG_TABLE[] =
@@ -19,24 +26,20 @@ PROGMEM static const RH_RF95::ModemConfig MODEM_CONFIG_TABLE[] =
     { 0x72,   0x74,    0x00}, // Bw125Cr45Sf128 (the chip default)
     { 0x92,   0x74,    0x00}, // Bw500Cr45Sf128
     { 0x48,   0x94,    0x00}, // Bw31_25Cr48Sf512
-    { 0x78,   0xc4,    0x00}, // Bw125Cr48Sf4096  ///  
-    ////{ 0x4b,   0xc7,    0x00}, // Bw125Cr45Sf4096
+    { 0x78,   0xc4,    0x00}, // Bw125Cr48Sf4096
 	////  TP-IoT Gateway runs on:
 	////    case 1:     setCR(CR_5);        // CR = 4/5
     ////                setSF(SF_12);       // SF = 12
     ////                setBW(BW_125);      // BW = 125 KHz
-    ////Starting 'setSF'
-	////## Writing:  ## Register 1:  81
-	////## Writing:  ## Register 31:  3
-	////## Writing:  ## Register 37:  A
-	////## Writing:  ## Register 1D:  4B
-	////## Writing:  ## Register 1E:  C7
-	////## Writing:  ## Register 1:  81
-    { 0x72,   0xc4,    0x00} // TP-IoT: Bw125Cr45Sf4096, derived from above
-    //{ 0x70,   0xc4,    0x00} // TP-IoT: Bw125Cr45Sf4096, no CRC on receipt
-    //{ 0x72,   0xc7,    0x00} // TP-IoT: Bw125Cr45Sf4096, copied from output log
-    ////{ RH_RF95_BW_125KHZ + RH_RF95_CODING_RATE_4_5, RH_RF95_SPREADING_FACTOR_4096CPS + RH_RF95_AGC_AUTO_ON,  0x00 } // TP-IoT: Bw125Cr45Sf4096
-    ////{ 0x4a,   0x97,    0x00} // TP-IoT: Bw125Cr45Sf4096, copied from Libelium
+    { FIXED_RH_RF95_BW_125KHZ + FIXED_RH_RF95_CODING_RATE_4_5,   // TP-IoT: Bw125Cr45Sf4096
+        RH_RF95_SPREADING_FACTOR_4096CPS + FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON,    0x00},
+
+	////  Testing TP-IoT Gateway on mode 5 (better reach, medium time on air)
+    ////    case 5:     setCR(CR_5);        // CR = 4/5
+    ////                setSF(SF_10);       // SF = 10
+    ////                setBW(BW_250);      // BW = 250 KHz -> 0x80
+    { FIXED_RH_RF95_BW_250KHZ + FIXED_RH_RF95_CODING_RATE_4_5,   // TP-IoT: Bw250Cr45Sf1024
+        RH_RF95_SPREADING_FACTOR_1024CPS + FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON,    0x00},
 };
 
 RH_RF95::RH_RF95(uint8_t slaveSelectPin, uint8_t interruptPin, RHGenericSPI& spi)
@@ -124,15 +127,19 @@ bool RH_RF95::init()
 	////    case 1:     setCR(CR_5);        // CR = 4/5
     ////                setSF(SF_12);       // SF = 12
     ////                setBW(BW_125);      // BW = 125 KHz
-    setModemConfig(Bw125Cr45Sf4096);  ////  TP-IoT
+    //setModemConfig(Bw125Cr45Sf4096);  ////  TP-IoT
+	////  Testing TP-IoT Gateway on mode 5 (better reach, medium time on air)
+    ////    case 5:     setCR(CR_5);        // CR = 4/5
+    ////                setSF(SF_10);       // SF = 10
+    ////                setBW(BW_250);      // BW = 250 KHz -> 0x80
+    setModemConfig(Bw250Cr45Sf1024);  ////  TP-IoT
 
     setPreambleLength(8); // Default is 8
+
     // An innocuous ISM frequency, same as RF22's
     ////setFrequency(434.0);
-
     ////  TP-IoT: uint32_t LORA_CH_10_868 = CH_10_868; //  0xD84CCC; // channel 10, central freq = 865.20MHz  ////  Lup Yuen
     setFrequency(865.20); ////  TP-IoT
-    ////printf("****Updated frequency to 865.20\n"); ////
 
     // Lowish power
     setTxPower(13);
@@ -140,11 +147,13 @@ bool RH_RF95::init()
 
     ////  TP-IoT: TODO: Tell gateway to skip CRC check.
 
-    ////  TP-IoT: Patch registers based on values from SX1272.
+#ifdef PATCH_REGISTERS
+    ////  TP-IoT: Patch registers based on values from SX1272 mode 1.
     spiWrite(0x8, 0xCC);  //  RegFrLsb. Must be set in idle mode.
     spiWrite(0xB, 0x3B);  //  RegOcp
     spiWrite(0xC, 0x23);  //  RegLna
     spiWrite(0x1F, 0xFF);  //  RegSymbTimeoutLsb
+#endif
 
 #ifdef INVERT_IQ
     ////  TP-IoT: TODO: To allow SX1276 to talk to SX1272, use inverted I/Q signal (prevent mote-to-mote communication)
@@ -305,11 +314,11 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
     spiWrite(RH_RF95_REG_00_FIFO, _txHeaderTo);
     spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFrom);
     spiWrite(RH_RF95_REG_00_FIFO, _txHeaderId);
-    spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFlags);
+    spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFlags + RH_RF95_HEADER_LEN);  //  TP-IoT: Must add header length because gateway uses this to determine packet length.
 #else
-    ////  TP-IoT:
-    //  dst, src, count, len
-    uint8_t header[] = { _txHeaderTo, _txHeaderFrom, _txHeaderId, _txHeaderFlags };
+    ////  TP-IoT: dst, src, count, len
+    uint8_t header[] = { _txHeaderTo, _txHeaderFrom, _txHeaderId,
+        _txHeaderFlags + RH_RF95_HEADER_LEN };  //  TP-IoT: Must add header length because gateway uses this to determine packet length.
     for (int i = 0; i < sizeof(header); i++) {
 	    Serial.print("Header[0x");
 	    Serial.print(i, HEX);
