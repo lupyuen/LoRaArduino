@@ -136,3 +136,9 @@ https://www.cooking-hacks.com/documentation/tutorials/extreme-range-lora-sx1272-
 
 http://www.airspayce.com/mikem/arduino/RadioHead/
 
+## References
+
+- Research project on the same topic:
+
+http://cpham.perso.univ-pau.fr/LORA/RPIgateway.html
+
