@@ -55,9 +55,17 @@ The `lora_gateway.py` script will receive LoRa packets and forward them to AWS I
 
 ![LoRa Gateway with Raspberry Pi 3 + Libelium LoRa Shield](https://github.com/lupyuen/LoRaArduino/blob/master/images/gateway.jpg)
 
+_LoRa Gateway with Raspberry Pi 3 + Libelium LoRa Shield_
+
+
 ![LoRa Node with Raspberry Pi 2 + Libelium LoRa Shield, Arduino Uno-compatible Seeeduino + Dragino LoRa Shield](https://github.com/lupyuen/LoRaArduino/blob/master/images/nodes.jpg)
 
-![Integration of LoRa Node to Slack via LoRa Gateway, AWS IoT Rules and AWS Lambda](https://github.com/lupyuen/LoRaArduino/blob/master/images/slack.jpg)
+_LoRa Node with Raspberry Pi 2 + Libelium LoRa Shield, Arduino Uno-compatible Seeeduino + Dragino LoRa Shield_
+
+
+![Integration of LoRa Node to Slack via LoRa Gateway, AWS IoT Rules and AWS Lambda](https://github.com/lupyuen/LoRaArduino/blob/master/images/slack.png)
+
+_Integration of LoRa Node to Slack via LoRa Gateway, AWS IoT Rules and AWS_
 
 ## External Libraries
 
