@@ -65,11 +65,11 @@ void loop()
   //uint8_t data[] = { 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, 0x00 };
   //uint8_t data[] = { 0x1, 0x2, 0x00 };
   Serial.print("Sending to rf95_server: 0x");
-  Serial.print(sizeof(data) - 1, HEX);
+  Serial.print(sizeof(data), HEX);
   Serial.print(" / ");
   Serial.println((char *) data);
-  rf95.setHeaderFlags(sizeof(data) - 1, 0xff);  //  TP-IoT: Byte 4 of header is the message length. 0xff will clear all bits.
-  rf95.send(data, sizeof(data) - 1);  //  Last byte is 0, don't send it.
+  rf95.setHeaderFlags(sizeof(data), 0xff);  //  TP-IoT: Byte 4 of header is the message length. 0xff will clear all bits.
+  rf95.send(data, sizeof(data));  //  TODO: Last byte is 0, don't send it.
   
   rf95.waitPacketSent();
   // Now wait for a reply

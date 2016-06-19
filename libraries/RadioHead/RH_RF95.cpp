@@ -32,8 +32,8 @@ PROGMEM static const RH_RF95::ModemConfig MODEM_CONFIG_TABLE[] =
 	////## Writing:  ## Register 1D:  4B
 	////## Writing:  ## Register 1E:  C7
 	////## Writing:  ## Register 1:  81
-    //{ 0x72,   0xc4,    0x00} // TP-IoT: Bw125Cr45Sf4096, derived from above
-    { 0x70,   0xc4,    0x00} // TP-IoT: Bw125Cr45Sf4096, no CRC on receipt
+    { 0x72,   0xc4,    0x00} // TP-IoT: Bw125Cr45Sf4096, derived from above
+    //{ 0x70,   0xc4,    0x00} // TP-IoT: Bw125Cr45Sf4096, no CRC on receipt
     //{ 0x72,   0xc7,    0x00} // TP-IoT: Bw125Cr45Sf4096, copied from output log
     ////{ RH_RF95_BW_125KHZ + RH_RF95_CODING_RATE_4_5, RH_RF95_SPREADING_FACTOR_4096CPS + RH_RF95_AGC_AUTO_ON,  0x00 } // TP-IoT: Bw125Cr45Sf4096
     ////{ 0x4a,   0x97,    0x00} // TP-IoT: Bw125Cr45Sf4096, copied from Libelium
@@ -300,6 +300,7 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
     // Position at the beginning of the FIFO
     spiWrite(RH_RF95_REG_0D_FIFO_ADDR_PTR, 0);
     // The headers
+#define ORIGINAL_HEADER
 #ifdef ORIGINAL_HEADER
     spiWrite(RH_RF95_REG_00_FIFO, _txHeaderTo);
     spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFrom);
@@ -320,7 +321,7 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
 #endif
 
     // The message data
-//#define ORIGINAL_BURST_WRITE
+#define ORIGINAL_BURST_WRITE
 #ifdef ORIGINAL_BURST_WRITE
     spiBurstWrite(RH_RF95_REG_00_FIFO, data, len);
     spiWrite(RH_RF95_REG_22_PAYLOAD_LENGTH, len + RH_RF95_HEADER_LEN);
