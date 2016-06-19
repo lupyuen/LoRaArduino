@@ -68,7 +68,7 @@ The software running on the Raspberry Pi + Libelium shield to function as a LoRa
 
 https://github.com/lupyuen/RaspberryPiImage/tree/master/home/pi/LoRa
  
-Check the installation instructions for LoRa on Raspberry Pi here:
+Check the installation instructions for LoRa gateway and LoRa node on Raspberry Pi here:
 
 https://github.com/lupyuen/AWSIOT/blob/master/README.md
  
