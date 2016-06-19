@@ -41,13 +41,15 @@ http://wiki.dragino.com/index.php?title=Lora/GPS_HAT
 
 ## LoRa Gateway
 
-The software im running on the Raspberry Pi + Libelium shield to function as a LoRa gateway is here:
+The software running on the Raspberry Pi + Libelium shield to function as a LoRa gateway is here:
+
 https://github.com/lupyuen/RaspberryPiImage/tree/master/home/pi/LoRa
  
-There are some installation instructions for LoRa on Raspberry Pi here:
+Check the installation instructions for LoRa on Raspberry Pi here:
+
 https://github.com/lupyuen/AWSIOT/blob/master/README.md
  
-The lora_gateway.py script will receive LoRa packets and forward them to AWS IoT, so that LoRa devices appear as IoT devices in the same manner as the TP-IoT environment. So the same IoT rules, lambda, sumo logic codes will still work
+The `lora_gateway.py` script will receive LoRa packets and forward them to AWS IoT, so that LoRa devices appear as IoT devices in the same manner as the TP-IoT environment used in the Temasek Polytechnic Smart IoT Applications course. So the same IoT rules, Lambda, Sumo Logic and Slack code will still work.
 
 ## External Libraries
 
