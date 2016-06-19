@@ -60,12 +60,12 @@ _LoRa Gateway with Raspberry Pi 3 + Libelium LoRa Shield_
 
 ![LoRa Node with Raspberry Pi 2 + Libelium LoRa Shield, Arduino Uno-compatible Seeeduino + Dragino LoRa Shield](https://github.com/lupyuen/LoRaArduino/blob/master/images/nodes.jpg)
 
-_LoRa Node with Raspberry Pi 2 + Libelium LoRa Shield, Arduino Uno-compatible Seeeduino + Dragino LoRa Shield_
+_LoRa Nodes with Raspberry Pi 2 + Libelium LoRa Shield, Arduino Uno-compatible Seeeduino + Dragino LoRa Shield, and portable battery pack _
 
 
 ![Integration of LoRa Node to Slack via LoRa Gateway, AWS IoT Rules and AWS Lambda](https://github.com/lupyuen/LoRaArduino/blob/master/images/slack.png)
 
-_Integration of LoRa Node to Slack via LoRa Gateway, AWS IoT Rules and AWS Lambda_
+_Integration of LoRa Node to Slack via LoRa Gateway, AWS IoT Rules Engine and AWS Lambda_
 
 ## External Libraries
 
