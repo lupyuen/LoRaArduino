@@ -146,6 +146,15 @@ bool RH_RF95::init()
     spiWrite(0xC, 0x23);  //  RegLna
     spiWrite(0x1F, 0xFF);  //  RegSymbTimeoutLsb
 
+#ifdef INVERT_IQ
+    ////  TP-IoT: TODO: To allow SX1276 to talk to SX1272, use inverted I/Q signal (prevent mote-to-mote communication)
+    // Refer to http://openlora.com/forum/viewtopic.php?t=887
+    // Also see example of SX1272-SX1276 interop: http://cpham.perso.univ-pau.fr/LORA/RPIgateway.html
+    //printf("setupLoRa: Before inverting I/Q REG_NODE_ADRS = 0x%02x\n", sx1272.readRegister(REG_NODE_ADRS));
+    const int REG_NODE_ADRS = 0x33;
+    spiWrite(REG_NODE_ADRS, spiRead(REG_NODE_ADRS)|(1<<6));
+    //printf("setupLoRa: After inverting I/Q REG_NODE_ADRS = 0x%02x\n", sx1272.readRegister(REG_NODE_ADRS));
+#endif  //  INVERT_IQ
     return true;
 }
 
@@ -298,10 +307,16 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
     spiWrite(RH_RF95_REG_00_FIFO, _txHeaderFlags);
 #else
     ////  TP-IoT:
-    spiWrite(RH_RF95_REG_00_FIFO, 1); //// dst
-    spiWrite(RH_RF95_REG_00_FIFO, 3); //// src
-    spiWrite(RH_RF95_REG_00_FIFO, 0); //// count
-    spiWrite(RH_RF95_REG_00_FIFO, len + RH_RF95_HEADER_LEN); //// len
+    //  dst, src, count, len
+    uint8_t header[] = { _txHeaderTo, _txHeaderFrom, _txHeaderId, _txHeaderFlags };
+    for (int i = 0; i < sizeof(header); i++) {
+	    Serial.print("Header[0x");
+	    Serial.print(i, HEX);
+	    Serial.print("] = 0x");
+	    Serial.print(header[i], HEX);
+	    Serial.println("");
+        spiWrite(RH_RF95_REG_00_FIFO, header[i]);
+    }
 #endif
 
     // The message data
