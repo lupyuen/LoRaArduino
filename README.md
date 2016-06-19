@@ -5,15 +5,23 @@ The code here runs on an Arduino Uno with LoRa shield (the LoRa Node) and connec
 
 LoRa is not suitable for applications that require constant, lossless bandwidth.  Up to 254 nodes are supported in this implementation.  Transmissions are not secured in this implementation.
 
-Arduino sketch and libraries for Libelium LoRa shield:
+- Arduino sketch and libraries for Libelium LoRa shield:
 
 **[SX_01a_TX_LoRa.ino](https://github.com/lupyuen/LoRaArduino/blob/master/SX_01a_TX_LoRa/SX_01a_TX_LoRa.ino)**
 
-Arduino sketch for Dragino LoRa shield:
+**[arduino-api](https://github.com/lupyuen/LoRaArduino/tree/master/libraries/arduino-api)**
+
+**[arduinoLoRa](https://github.com/lupyuen/LoRaArduino/tree/master/libraries/arduinoLoRa)**
+
+
+- Arduino sketch and libraries for Dragino LoRa shield:
 
 **[rf95_client.ino](https://github.com/lupyuen/LoRaArduino/blob/master/rf95_client/rf95_client.ino)**
 
-Python node script for Libelium LoRa shield:
+**[RadioHead](https://github.com/lupyuen/LoRaArduino/tree/master/libraries/RadioHead)**
+
+
+- Python node script for Libelium LoRa shield:
 
 **[test_lora_interface.py](https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/test_lora_interface.py)**
 
