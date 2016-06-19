@@ -127,12 +127,12 @@ bool RH_RF95::init()
 	////    case 1:     setCR(CR_5);        // CR = 4/5
     ////                setSF(SF_12);       // SF = 12
     ////                setBW(BW_125);      // BW = 125 KHz
-    //setModemConfig(Bw125Cr45Sf4096);  ////  TP-IoT
+    //setModemConfig(Bw125Cr45Sf4096);  ////  TP-IoT Mode 1
 	////  Testing TP-IoT Gateway on mode 5 (better reach, medium time on air)
     ////    case 5:     setCR(CR_5);        // CR = 4/5
     ////                setSF(SF_10);       // SF = 10
     ////                setBW(BW_250);      // BW = 250 KHz -> 0x80
-    setModemConfig(Bw250Cr45Sf1024);  ////  TP-IoT
+    setModemConfig(Bw250Cr45Sf1024);  ////  TP-IoT Mode 5
 
     setPreambleLength(8); // Default is 8
 
@@ -294,11 +294,9 @@ bool RH_RF95::send(const uint8_t* data, uint8_t len)
 {
     if (len > RH_RF95_MAX_MESSAGE_LEN)
 	return false;
-
-    ////  TP-IoT:
+#ifdef DUMP_REGISTERS
 	Serial.print("*** _txHeaderFlags: 0x");
 	Serial.println(_txHeaderFlags, HEX);
-#ifdef DUMP_REGISTERS
 	for (int i = 0; i <= 0x3f; i++) {
 	    Serial.print("Reg[0x");
 	    Serial.print(i, HEX);
