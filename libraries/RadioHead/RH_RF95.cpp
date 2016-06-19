@@ -141,9 +141,14 @@ bool RH_RF95::init()
     ////  TP-IoT: uint32_t LORA_CH_10_868 = CH_10_868; //  0xD84CCC; // channel 10, central freq = 865.20MHz  ////  Lup Yuen
     setFrequency(865.20); ////  TP-IoT
 
-    // Lowish power
-    setTxPower(13);
+#define HIGH_POWER
+#ifdef HIGH_POWER
     ////  TP-IoT: TODO: Set power.
+    setTxPower(23);
+#else
+    // Lowish power
+    //setTxPower(13);
+#endif  //  HIGH_POWER
 
     ////  TP-IoT: TODO: Tell gateway to skip CRC check.
 
