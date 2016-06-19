@@ -40,7 +40,7 @@ https://www.cooking-hacks.com/lora-radio-shield-for-arduino-868-mhz
 
 http://www.seeedstudio.com/item_detail.html?p_id=2651
 
-**Note:** The Hope RF96 chip does not support Semtech's *Low Data Rate Optimization* (supported by Semtech SX1272 and SX1276)
+**Note:** The Hope RF96 chip does not support Semtech's **Low Data Rate Optimization** (supported by Semtech SX1272 and SX1276)
 so we won't be able to use LoRa Mode 1 for maximum range, minimum bandwidth transmission.  If the coding scheme were documented,
 we should be able to support all modes on Hope RF96.
 
@@ -99,6 +99,16 @@ Set `mode = 5` in [test_lora_interface.py](https://github.com/lupyuen/RaspberryP
 
 Set `setModemConfig(Bw250Cr45Sf1024)` in 
 [RH_RF95.cpp](https://github.com/lupyuen/LoRaArduino/blob/master/libraries/RadioHead/RH_RF95.cpp)
+
+- What happens when you send a data packet from the Dragino shield in Mode 1?
+
+The Libelium shield only receives the first 3 bytes intact, the rest of the message is scrambled.  Compare these logs:
+
+https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/arduino_dragino.log
+
+https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/arduino_libelium.log
+
+Can we use this to send tiny packets?
 
 ## Photos
 
