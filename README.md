@@ -65,7 +65,7 @@ _LoRa Node with Raspberry Pi 2 + Libelium LoRa Shield, Arduino Uno-compatible Se
 
 ![Integration of LoRa Node to Slack via LoRa Gateway, AWS IoT Rules and AWS Lambda](https://github.com/lupyuen/LoRaArduino/blob/master/images/slack.png)
 
-_Integration of LoRa Node to Slack via LoRa Gateway, AWS IoT Rules and AWS_
+_Integration of LoRa Node to Slack via LoRa Gateway, AWS IoT Rules and AWS Lambda_
 
 ## External Libraries
 
