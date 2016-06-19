@@ -1,7 +1,7 @@
 # LoRaArduino
 Arduino code for connecting to LoRa IoT gateway at Temasek Polytechnic 
 
-The code here runs on an Arduino Uno with LoRa shield (the LoRa Node) and connects to a Raspberry Pi 2 or 3 with LoRa shield (the LoRa Gateway)
+The code here runs on an Arduino Uno with LoRa shield (the LoRa Node) and connects to a Raspberry Pi 2 or 3 with LoRa shield (the LoRa Gateway). The devices and code here have been tested for sending small redundant data packets (under 50 bytes) at low speeds (100 bps) for infrequent transmissions (once every 30 seconds), at about 500 metres (or a few floors) in a campus environment, with the gateway placed behind a window.  LoRa is not suitable for applications that require constant, lossless bandwidth.
 
 ## Supported LoRa Shields
 
