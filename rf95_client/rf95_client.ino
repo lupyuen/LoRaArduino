@@ -38,6 +38,10 @@ void setup()
 
 //  Buffer for sending sensor data.
 char buffer[256];
+/*
+  uint8_t buffer[] = { 0x01, 0x00, 0x01, 0x00, 0x01, 0x00 };
+  int buffer_len = 6;
+*/  
 //  Number of messages sent and received.
 int send_count = 0;
 int receive_count = 0;
@@ -47,9 +51,9 @@ void loop()
   // Send and receive data loop.
   // Send sensor data to the gateway.  Sequence must match the gateway definition.
   int status = -1, setup_done = -1;
-  sprintf(buffer, "%d|%d|%d|%d|%d|%d",
-    device_address, gateway_address, status, setup_done, send_count, receive_count);
+  sprintf(buffer, "%d|%d|%d|%d|%d|%d", device_address, gateway_address, status, setup_done, send_count, receive_count);
   int buffer_len = strlen(buffer) + 1;  //  Including trailing 0.  
+
   Serial.print("Sending to LoRa gateway: 0x");
   Serial.print(buffer_len, HEX);
   Serial.print(" bytes / ");

@@ -127,12 +127,12 @@ bool RH_RF95::init()
 	////    case 1:     setCR(CR_5);        // CR = 4/5
     ////                setSF(SF_12);       // SF = 12
     ////                setBW(BW_125);      // BW = 125 KHz
-    //setModemConfig(Bw125Cr45Sf4096);  ////  TP-IoT Mode 1
+    setModemConfig(Bw125Cr45Sf4096);  ////  TP-IoT Mode 1
 	////  Testing TP-IoT Gateway on mode 5 (better reach, medium time on air)
     ////    case 5:     setCR(CR_5);        // CR = 4/5
     ////                setSF(SF_10);       // SF = 10
     ////                setBW(BW_250);      // BW = 250 KHz -> 0x80
-    setModemConfig(Bw250Cr45Sf1024);  ////  TP-IoT Mode 5
+    //setModemConfig(Bw250Cr45Sf1024);  ////  TP-IoT Mode 5
 
     setPreambleLength(8); // Default is 8
 
@@ -149,8 +149,6 @@ bool RH_RF95::init()
     // Lowish power
     //setTxPower(13);
 #endif  //  HIGH_POWER
-
-    ////  TP-IoT: TODO: Tell gateway to skip CRC check.
 
 #ifdef PATCH_REGISTERS
     ////  TP-IoT: Patch registers based on values from SX1272 mode 1.
@@ -172,9 +170,8 @@ bool RH_RF95::init()
     return true;
 }
 
-extern int testRF95; ////  TP-IoT
+extern int testRF95; ////  TP-IoT: Used to confirm that we are loading the right library.
 int testRF95 = -1; ////  TP-IoT
-
 
 // C++ level interrupt handler for this instance
 // LORA is unusual in that it has several interrupt lines, and not a single, combined one.
@@ -193,12 +190,26 @@ void RH_RF95::handleInterrupt()
     {
 	// Have received a packet
 	uint8_t len = spiRead(RH_RF95_REG_13_RX_NB_BYTES);
+	Serial.print("*** received len: 0x");
+	Serial.println(len, HEX);
 
 	// Reset the fifo read ptr to the beginning of the packet
 	spiWrite(RH_RF95_REG_0D_FIFO_ADDR_PTR, spiRead(RH_RF95_REG_10_FIFO_RX_CURRENT_ADDR));
 	spiBurstRead(RH_RF95_REG_00_FIFO, _buf, len);
 	_bufLen = len;
 	spiWrite(RH_RF95_REG_12_IRQ_FLAGS, 0xff); // Clear all IRQ flags
+
+#define DUMP_RECEIVED_PACKET
+#ifdef DUMP_RECEIVED_PACKET
+    ////  TP-IoT
+    for (int i = 0; i < len; i++) {
+	    Serial.print("Received[0x");
+	    Serial.print(i, HEX);
+	    Serial.print("] = 0x");
+	    Serial.print(_buf[i], HEX);
+	    Serial.println("");
+    }
+#endif  //  DUMP_RECEIVED_PACKET
 
 	// Remember the RSSI of this packet
 	// this is according to the doc, but is it really correct?
