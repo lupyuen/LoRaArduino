@@ -138,3 +138,7 @@ http://www.airspayce.com/mikem/arduino/RadioHead/
 
 http://cpham.perso.univ-pau.fr/LORA/RPIgateway.html
 
+- More about LoRa and SIGFOX:
+
+http://www.instructables.com/id/Introducing-LoRa-/?ALLSTEPS
+
