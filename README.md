@@ -81,24 +81,20 @@ The LoRa Gateway script **[lora_gateway.py](https://github.com/lupyuen/Raspberry
 
 This mode offers the longest range.  It's supported **only on Libelium sheids** for Raspberry Pi / Arduino, not for Dragino shields, because this mode uses Low Data Rate Optimization.
 
-Set `transmission_mode = 1` in [lora_gateway.py](https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/lora_gateway.py)
-and [SX_01a_TX_LoRa.ino](https://github.com/lupyuen/LoRaArduino/blob/master/SX_01a_TX_LoRa/SX_01a_TX_LoRa.ino)
-
-Set `mode = 1` in [test_lora_interface.py](https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/test_lora_interface.py)
-
-Set `setModemConfig(Bw125Cr45Sf4096)` in [RH_RF95.cpp](https://github.com/lupyuen/LoRaArduino/blob/master/libraries/RadioHead/RH_RF95.cpp)
+Set `transmission_mode = 1` in [lora_gateway.py](https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/lora_gateway.py),
+[SX_01a_TX_LoRa.ino](https://github.com/lupyuen/LoRaArduino/blob/master/SX_01a_TX_LoRa/SX_01a_TX_LoRa.ino),
+[RH_RF95.cpp](https://github.com/lupyuen/LoRaArduino/blob/master/libraries/RadioHead/RH_RF95.cpp)
+and [test_lora_interface.py](https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/test_lora_interface.py)
 
 - **Mode 5:** Bandwidth = 250 KHz, Coding Rate = 4/5, Spreading Factor = 10
 
 This mode supported on Libelium sheids and Dragino shields for Raspberry Pi / Arduino because it doesn't use Low Data Rate Optimization.
 
-Set `transmission_mode = 5` in [lora_gateway.py](https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/lora_gateway.py)
-and [SX_01a_TX_LoRa.ino](https://github.com/lupyuen/LoRaArduino/blob/master/SX_01a_TX_LoRa/SX_01a_TX_LoRa.ino)
-
-Set `mode = 5` in [test_lora_interface.py](https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/test_lora_interface.py)
-
-Set `setModemConfig(Bw250Cr45Sf1024)` in 
+Set `transmission_mode = 5` in [lora_gateway.py](https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/lora_gateway.py),
+[SX_01a_TX_LoRa.ino](https://github.com/lupyuen/LoRaArduino/blob/master/SX_01a_TX_LoRa/SX_01a_TX_LoRa.ino),
 [RH_RF95.cpp](https://github.com/lupyuen/LoRaArduino/blob/master/libraries/RadioHead/RH_RF95.cpp)
+and [test_lora_interface.py](https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/test_lora_interface.py)
+
 
 - What happens when you send a data packet from the Dragino shield in Mode 1?
 
