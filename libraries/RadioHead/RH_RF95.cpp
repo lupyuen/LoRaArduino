@@ -3,6 +3,9 @@
 // Copyright (C) 2011 Mike McCauley
 // $Id: RH_RF95.cpp,v 1.11 2016/04/04 01:40:12 mikem Exp mikem $
 
+//  Set the LoRa transmission mode.  Mode 1 is max range but not supported on Dragino and Hope RF96 chip.
+//#define TRANSMISSION_MODE 1
+#define TRANSMISSION_MODE 5
 #include <RH_RF95.h>
 
 // Interrupt vectors for the 3 Arduino interrupt pins
@@ -123,17 +126,30 @@ bool RH_RF95::init()
     // No Sync Words in LORA mode.
     ////setModemConfig(Bw125Cr45Sf128); // Radio default
     ////setModemConfig(Bw125Cr48Sf4096); // slow and reliable?
-	////  TP-IoT Gateway runs on:
-	////    case 1:     setCR(CR_5);        // CR = 4/5
-    ////                setSF(SF_12);       // SF = 12
-    ////                setBW(BW_125);      // BW = 125 KHz
-    setModemConfig(Bw125Cr45Sf4096);  ////  TP-IoT Mode 1
-	////  Testing TP-IoT Gateway on mode 5 (better reach, medium time on air)
-    ////    case 5:     setCR(CR_5);        // CR = 4/5
-    ////                setSF(SF_10);       // SF = 10
-    ////                setBW(BW_250);      // BW = 250 KHz -> 0x80
-    //setModemConfig(Bw250Cr45Sf1024);  ////  TP-IoT Mode 5
-
+    //  Define the transmission mode in the sketch.
+    extern int transmission_mode;
+    switch (transmission_mode) {
+        case 1: {
+            ////  Mode 1 is max range but does NOT work with Dragino shield and Hope RF96 chip.
+            ////  TP-IoT Gateway runs on:
+            ////    case 1:     setCR(CR_5);        // CR = 4/5
+            ////                setSF(SF_12);       // SF = 12
+            ////                setBW(BW_125);      // BW = 125 KHz
+            setModemConfig(Bw125Cr45Sf4096);  ////  TP-IoT Mode 1
+            break;
+        }
+        case 5: {
+            ////  Testing TP-IoT Gateway on mode 5 (better reach, medium time on air)
+            ////  Works with Dragino shield and Hope RF96 chip.
+            ////    case 5:     setCR(CR_5);        // CR = 4/5
+            ////                setSF(SF_10);       // SF = 10
+            ////                setBW(BW_250);      // BW = 250 KHz -> 0x80
+            setModemConfig(Bw250Cr45Sf1024);  ////  TP-IoT Mode 5
+        }
+        default:
+            Serial.print("Unknown transmission_mode ");
+            Serial.println(transmission_mode);
+    }
     setPreambleLength(8); // Default is 8
 
     // An innocuous ISM frequency, same as RF22's
@@ -169,9 +185,6 @@ bool RH_RF95::init()
 #endif  //  INVERT_IQ
     return true;
 }
-
-extern int testRF95; ////  TP-IoT: Used to confirm that we are loading the right library.
-int testRF95 = -1; ////  TP-IoT
 
 // C++ level interrupt handler for this instance
 // LORA is unusual in that it has several interrupt lines, and not a single, combined one.
