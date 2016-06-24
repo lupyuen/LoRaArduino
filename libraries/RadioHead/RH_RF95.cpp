@@ -145,6 +145,7 @@ bool RH_RF95::init()
             ////                setSF(SF_10);       // SF = 10
             ////                setBW(BW_250);      // BW = 250 KHz -> 0x80
             setModemConfig(Bw250Cr45Sf1024);  ////  TP-IoT Mode 5
+            break;
         }
         default:
             Serial.print("Unknown transmission_mode ");
