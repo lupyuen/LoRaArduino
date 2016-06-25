@@ -496,6 +496,59 @@ static void txlora () {
     writeReg(LORARegFifoAddrPtr, 0x00);
     writeReg(LORARegPayloadLength, LMIC.dataLen);
 
+    //  TP-IoT: Fixed constants according to http://www.hoperf.com/upload/rf/RFM95_96_97_98W.pdf
+    const int FIXED_RH_RF95_BW_125KHZ                             = 0x70;
+    const int FIXED_RH_RF95_BW_250KHZ                             = 0x80;
+    const int FIXED_RH_RF95_CODING_RATE_4_5                       = 0x02;
+    const int FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON                  = 0x04;
+    const int RH_RF95_SPREADING_FACTOR                            = 0xf0;
+    const int RH_RF95_SPREADING_FACTOR_64CPS                      = 0x60;
+    const int RH_RF95_SPREADING_FACTOR_128CPS                     = 0x70;
+    const int RH_RF95_SPREADING_FACTOR_256CPS                     = 0x80;
+    const int RH_RF95_SPREADING_FACTOR_512CPS                     = 0x90;
+    const int RH_RF95_SPREADING_FACTOR_1024CPS                    = 0xa0;
+    const int RH_RF95_SPREADING_FACTOR_2048CPS                    = 0xb0;
+    const int RH_RF95_SPREADING_FACTOR_4096CPS                    = 0xc0;
+    extern int transmission_mode;
+    switch (transmission_mode) {
+        case 1: {
+            ////  Mode 1 is max range but does NOT work with Dragino shield and Hope RF96 chip.
+            ////  TP-IoT Gateway runs on:
+            ////    case 1:     setCR(CR_5);        // CR = 4/5
+            ////                setSF(SF_12);       // SF = 12
+            ////                setBW(BW_125);      // BW = 125 KHz
+            //  TP-IoT Mode 1: Bw125Cr45Sf4096
+            writeReg(LORARegModemConfig1, FIXED_RH_RF95_BW_125KHZ + FIXED_RH_RF95_CODING_RATE_4_5);
+            writeReg(LORARegModemConfig2, RH_RF95_SPREADING_FACTOR_4096CPS /* + FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON */);
+            break;
+        }
+        case 5: {
+            ////  Testing TP-IoT Gateway on mode 5 (better reach, medium time on air)
+            ////  Works with Dragino shield and Hope RF96 chip.
+            ////    case 5:     setCR(CR_5);        // CR = 4/5
+            ////                setSF(SF_10);       // SF = 10
+            ////                setBW(BW_250);      // BW = 250 KHz -> 0x80
+            //  TP-IoT Mode 5: Bw250Cr45Sf1024
+            writeReg(LORARegModemConfig1, FIXED_RH_RF95_BW_250KHZ + FIXED_RH_RF95_CODING_RATE_4_5);
+            writeReg(LORARegModemConfig2, RH_RF95_SPREADING_FACTOR_1024CPS /* + FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON */);
+            break;
+        }
+        default:
+            ASSERT(NULL);
+            //Serial.print("Unknown transmission_mode ");
+            //Serial.println(transmission_mode);
+    }
+
+    //  TP-IoT: Preamble length 8.
+    const int RH_RF95_REG_20_PREAMBLE_MSB                         = 0x20;
+    const int RH_RF95_REG_21_PREAMBLE_LSB                         = 0x21;
+    const int preamble_length = 8;
+    writeReg(RH_RF95_REG_20_PREAMBLE_MSB, preamble_length >> 8);
+    writeReg(RH_RF95_REG_21_PREAMBLE_LSB, preamble_length & 0xff);
+    //  TP-IoT sync.
+    const int RH_RF69_REG_39_NODEADRS                             = 0x39;
+    writeReg(RH_RF69_REG_39_NODEADRS, 0x12);
+
     // download buffer to the radio FIFO
     writeBuf(RegFifo, LMIC.frame, LMIC.dataLen);
 
@@ -509,7 +562,8 @@ static void txlora () {
 // start transmitter (buf=LMIC.frame, len=LMIC.dataLen)
 static void starttx () {
     ASSERT( (readReg(RegOpMode) & OPMODE_MASK) == OPMODE_SLEEP );
-    if(getSf(LMIC.rps) == FSK) { // FSK modem
+    ////if(getSf(LMIC.rps) == FSK) { // FSK modem
+    if (NULL) {  ////  TP-IoT uses LoRa not FSK.
         txfsk();
     } else { // LoRa modem
         txlora();
@@ -628,7 +682,8 @@ static void rxfsk (u1_t rxmode) {
 
 static void startrx (u1_t rxmode) {
     ASSERT( (readReg(RegOpMode) & OPMODE_MASK) == OPMODE_SLEEP );
-    if(getSf(LMIC.rps) == FSK) { // FSK modem
+    ////if(getSf(LMIC.rps) == FSK) { // FSK modem
+    if (NULL) {  ////  TP-IoT uses LoRa not FSK.
         rxfsk(rxmode);
     } else { // LoRa modem
         rxlora(rxmode);

@@ -1,3 +1,4 @@
+//  Based on https://github.com/matthijskooijman/arduino-lmic
 /*******************************************************************************
  * Copyright (c) 2015 Matthijs Kooijman
  *
@@ -11,7 +12,8 @@
  * when not transmitting. Running this sketch on two nodes should allow
  * them to communicate.
  *******************************************************************************/
- 
+
+extern int transmission_mode;
 ////  TP-IoT: Mode 1 is max range but does NOT work with Dragino shield and Hope RF96 chip.
 ////  TP-IoT Gateway runs on:
 ////    case 1:     setCR(CR_5);        // CR = 4/5
@@ -132,7 +134,7 @@ static void txdone_func (osjob_t* job) {
 // log text to USART and toggle LED
 static void tx_func (osjob_t* job) {
   // say hello
-  tx("Hello, world!", txdone_func);
+  tx("4|1|2|3", txdone_func);
   // reschedule job every TX_INTERVAL (plus a bit of random to prevent
   // systematic collisions), unless packets are received, then rx_func
   // will reschedule at half this time.
@@ -141,7 +143,7 @@ static void tx_func (osjob_t* job) {
 
 // application entry point
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println("Starting");
   #ifdef VCC_ENABLE
   // For Pinoccio Scout boards
