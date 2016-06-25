@@ -177,6 +177,19 @@ void setup() {
   // This sets CR 4/5, BW125 (except for DR_SF7B, which uses BW250)
   LMIC.rps = updr2rps(LMIC.datarate);
 
+  ////  TP-IoT: Mode 1 is max range but does NOT work with Dragino shield and Hope RF96 chip.
+  ////  TP-IoT Gateway runs on:
+  ////    case 1:     setCR(CR_5);        // CR = 4/5
+  ////                setSF(SF_12);       // SF = 12
+  ////                setBW(BW_125);      // BW = 125 KHz
+  //  TP-IoT Mode 1: Bw125Cr45Sf4096
+  //writeReg(LORARegModemConfig1, FIXED_RH_RF95_BW_125KHZ + FIXED_RH_RF95_CODING_RATE_4_5);
+  //writeReg(LORARegModemConfig2, RH_RF95_SPREADING_FACTOR_4096CPS /* + FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON */);
+
+  setCr(LMIC.rps, CR_4_5);
+  setSf(LMIC.rps, SF12);
+  setBw(LMIC.rps, BW125);
+    
   Serial.println("Started");
   Serial.flush();
 

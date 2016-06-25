@@ -474,10 +474,12 @@ static void txlora () {
 
     // enter standby mode (required for FIFO loading))
     opmode(OPMODE_STANDBY);
+
     // configure LoRa modem (cfg1, cfg2)
     configLoraModem();
     // configure frequency
     configChannel();
+
     // configure output power
     writeReg(RegPaRamp, (readReg(RegPaRamp) & 0xF0) | 0x08); // set PA ramp-up time 50 uSec
     configPower();
@@ -496,6 +498,7 @@ static void txlora () {
     writeReg(LORARegFifoAddrPtr, 0x00);
     writeReg(LORARegPayloadLength, LMIC.dataLen);
 
+#ifdef NOTUSED
     //  TP-IoT: Fixed constants according to http://www.hoperf.com/upload/rf/RFM95_96_97_98W.pdf
     const int FIXED_RH_RF95_BW_125KHZ                             = 0x70;
     const int FIXED_RH_RF95_BW_250KHZ                             = 0x80;
@@ -521,8 +524,7 @@ static void txlora () {
             ////                setSF(SF_12);       // SF = 12
             ////                setBW(BW_125);      // BW = 125 KHz
             //  TP-IoT Mode 1: Bw125Cr45Sf4096
-            //writeReg(LORARegModemConfig1, FIXED_RH_RF95_BW_125KHZ + FIXED_RH_RF95_CODING_RATE_4_5);
-            writeReg(LORARegModemConfig1, FIXED_RH_RF95_BW_125KHZ + FIXED_RH_RF95_CODING_RATE_4_8);
+            writeReg(LORARegModemConfig1, FIXED_RH_RF95_BW_125KHZ + FIXED_RH_RF95_CODING_RATE_4_5);
             writeReg(LORARegModemConfig2, RH_RF95_SPREADING_FACTOR_4096CPS /* + FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON */);
             break;
         }
@@ -542,6 +544,7 @@ static void txlora () {
             //Serial.print("Unknown transmission_mode ");
             //Serial.println(transmission_mode);
     }
+#endif
 
     //  TP-IoT: Preamble length 8.
     const int RH_RF95_REG_20_PREAMBLE_MSB                         = 0x20;
