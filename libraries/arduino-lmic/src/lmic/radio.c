@@ -500,6 +500,9 @@ static void txlora () {
     const int FIXED_RH_RF95_BW_125KHZ                             = 0x70;
     const int FIXED_RH_RF95_BW_250KHZ                             = 0x80;
     const int FIXED_RH_RF95_CODING_RATE_4_5                       = 0x02;
+    const int FIXED_RH_RF95_CODING_RATE_4_6                       = 0x04;
+    const int FIXED_RH_RF95_CODING_RATE_4_7                       = 0x06;
+    const int FIXED_RH_RF95_CODING_RATE_4_8                       = 0x08;
     const int FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON                  = 0x04;
     const int RH_RF95_SPREADING_FACTOR                            = 0xf0;
     const int RH_RF95_SPREADING_FACTOR_64CPS                      = 0x60;
@@ -518,7 +521,8 @@ static void txlora () {
             ////                setSF(SF_12);       // SF = 12
             ////                setBW(BW_125);      // BW = 125 KHz
             //  TP-IoT Mode 1: Bw125Cr45Sf4096
-            writeReg(LORARegModemConfig1, FIXED_RH_RF95_BW_125KHZ + FIXED_RH_RF95_CODING_RATE_4_5);
+            //writeReg(LORARegModemConfig1, FIXED_RH_RF95_BW_125KHZ + FIXED_RH_RF95_CODING_RATE_4_5);
+            writeReg(LORARegModemConfig1, FIXED_RH_RF95_BW_125KHZ + FIXED_RH_RF95_CODING_RATE_4_8);
             writeReg(LORARegModemConfig2, RH_RF95_SPREADING_FACTOR_4096CPS /* + FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON */);
             break;
         }
