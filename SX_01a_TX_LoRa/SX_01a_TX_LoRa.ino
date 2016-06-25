@@ -32,8 +32,8 @@
 //  TP-IoT
 const int device_address = 4;  //  Must be unique for each device.
 const int gateway_address = 1;
-//const int transmission_mode = 1;  //  Max range, slow data rate.
-const int transmission_mode = 5;  //  Better reach, medium time on air. Test this mode because it doesn't mandate Low Data Rate Optimisation, which is not supported on Hope RF95.
+const int transmission_mode = 1;  //  Max range, slow data rate.
+//const int transmission_mode = 5;  //  Better reach, medium time on air. Test this mode because it doesn't mandate Low Data Rate Optimisation, which is not supported on Hope RF95.
 //const int transmission_channel = CH_10_868;
 const char transmission_power = 'H';
 const int receive_timeout = 10000;

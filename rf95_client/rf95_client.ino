@@ -11,12 +11,12 @@
 #include <SPI.h>
 #include <RH_RF95.h>
 
-//extern int transmission_mode = 1;  //  Long range but NOT supported on Dragino and Hope RF96.
-extern int transmission_mode = 5;  //  Medium range and supported on Dragino and Hope RF96.
+extern int transmission_mode = 1;  //  Long range but NOT supported on Dragino and Hope RF96.
+//extern int transmission_mode = 5;  //  Medium range and supported on Dragino and Hope RF96.
 const int device_address = 3;  //  My own address as assigned by TP-IoT.
 const int gateway_address = 1;  //  TP-IoT Gateway address.
 const int random_digits = 8;  //  Number of digits for Low Data Rate Optimization testing.
-int seed = 1;  //  Random seed for Low Data Rate Optimization testing.  Set to 0 to disable testing.
+int seed = 0x1;  //  Random seed for Low Data Rate Optimization testing.  Set to 0 to disable testing.
 
 // Singleton instance of the radio driver
 RH_RF95 rf95;
@@ -72,9 +72,23 @@ char *getRandomPacket()
   if (random_sequence == 0) {
     //  For the first sequence, send 1 packet with source=0 followed by 1 packet with source=seed value.
     rf95.setHeaderFrom(0);
-    sendMessage("0", 2);
+    sendMessage("00000000", 9);
+    delay(5000);
+    sendMessage("00000000", 9);
+    delay(5000);
+    sendMessage("00000000", 9);
+    delay(5000);
+    sendMessage("00000000", 9);
+    delay(5000);
     rf95.setHeaderFrom(seed);
-    sendMessage("0", 2);
+    sendMessage("00000000", 9);
+    delay(5000);
+    sendMessage("00000000", 9);
+    delay(5000);
+    sendMessage("00000000", 9);
+    delay(5000);
+    sendMessage("00000000", 9);
+    delay(5000);
   }
 
   //  Set the from address to the sequence ID for correlation.
