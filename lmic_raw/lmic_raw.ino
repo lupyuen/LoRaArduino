@@ -11,6 +11,22 @@
  * when not transmitting. Running this sketch on two nodes should allow
  * them to communicate.
  *******************************************************************************/
+ 
+////  TP-IoT: Mode 1 is max range but does NOT work with Dragino shield and Hope RF96 chip.
+////  TP-IoT Gateway runs on:
+////    case 1:     setCR(CR_5);        // CR = 4/5
+////                setSF(SF_12);       // SF = 12
+////                setBW(BW_125);      // BW = 125 KHz
+//setModemConfig(Bw125Cr45Sf4096);  ////  TP-IoT Mode 1
+int transmission_mode = 1;
+
+////  Testing TP-IoT Gateway on mode 5 (better reach, medium time on air)
+////  Works with Dragino shield and Hope RF96 chip.
+////    case 5:     setCR(CR_5);        // CR = 4/5
+////                setSF(SF_10);       // SF = 10
+////                setBW(BW_250);      // BW = 250 KHz -> 0x80
+//setModemConfig(Bw250Cr45Sf1024);  ////  TP-IoT Mode 5
+//int transmission_mode = 5;
 
 #include <lmic.h>
 #include <hal/hal.h>
@@ -29,6 +45,7 @@
 // https://docs.google.com/spreadsheets/d/1voGAtQAjC1qBmaVuP1ApNKs1ekgUjavHuVQIXyYSvNc 
 #define TX_INTERVAL 2000
 
+/*  Original settings:
 // Pin mapping
 const lmic_pinmap lmic_pins = {
     .nss = 6,
@@ -36,7 +53,14 @@ const lmic_pinmap lmic_pins = {
     .rst = 5,
     .dio = {2, 3, 4},
 };
-
+*/
+//  TP-IoT Pin mapping
+const lmic_pinmap lmic_pins = {
+    .nss = 10,// Connected to pin D10
+    .rxtx = LMIC_UNUSED_PIN,// For placeholder only, Do not connected on RFM92/RFM95
+    .rst = 9,// Needed on RFM92/RFM95? (probably not)
+    .dio = {2, 6, 7},// Specify pin numbers for DIO0, 1, 2 connected to D2, D6, D7 
+};
 
 // These callbacks are only used in over-the-air activation, so they are
 // left empty here (we cannot leave them out completely unless
@@ -134,13 +158,20 @@ void setup() {
   // Set up these settings once, and use them for both TX and RX
 
   // Use a frequency in the g3 which allows 10% duty cycling.
-  LMIC.freq = 869525000;
+  ////LMIC.freq = 869525000;
+  ////  TP-IoT: uint32_t LORA_CH_10_868 = CH_10_868; //  0xD84CCC; // channel 10, central freq = 865.20MHz  ////  Lup Yuen
+  LMIC.freq = 865200000; //// TP-IoT: 865.20 MHz
+  
   // Maximum TX power
   LMIC.txpow = 27;
   // Use a medium spread factor. This can be increased up to SF12 for
   // better range, but then the interval should be (significantly)
   // lowered to comply with duty cycle limits as well.
-  LMIC.datarate = DR_SF9;
+  ////LMIC.datarate = DR_SF9;
+  LMIC.datarate =
+    (transmission_mode == 1) ? DR_SF12 :  ////  TP-IoT Mode 1.
+    (transmission_mode == 5) ? DR_SF10 :  ////  TP-IoT Mode 5.
+  
   // This sets CR 4/5, BW125 (except for DR_SF7B, which uses BW250)
   LMIC.rps = updr2rps(LMIC.datarate);
 
