@@ -475,30 +475,26 @@ static void txlora () {
     // enter standby mode (required for FIFO loading))
     opmode(OPMODE_STANDBY);
 
+      ////  TP-IoT: Mode 1 is max range but does NOT work with Dragino shield and Hope RF96 chip.
+  ////  TP-IoT Gateway runs on:
+  ////    case 1:     setCR(CR_5);        // CR = 4/5
+  ////                setSF(SF_12);       // SF = 12
+  ////                setBW(BW_125);      // BW = 125 KHz
+  //  TP-IoT Mode 1: Bw125Cr45Sf4096
+  //writeReg(LORARegModemConfig1, FIXED_RH_RF95_BW_125KHZ + FIXED_RH_RF95_CODING_RATE_4_5);
+  //writeReg(LORARegModemConfig2, RH_RF95_SPREADING_FACTOR_4096CPS /* + FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON */);
+
+  setCr(LMIC.rps, CR_4_5);
+  setSf(LMIC.rps, SF12);
+  setBw(LMIC.rps, BW125);
+
     // configure LoRa modem (cfg1, cfg2)
     configLoraModem();
     // configure frequency
     configChannel();
 
-    // configure output power
-    writeReg(RegPaRamp, (readReg(RegPaRamp) & 0xF0) | 0x08); // set PA ramp-up time 50 uSec
-    configPower();
-    // set sync word
-    writeReg(LORARegSyncWord, LORA_MAC_PREAMBLE);
-
-    // set the IRQ mapping DIO0=TxDone DIO1=NOP DIO2=NOP
-    writeReg(RegDioMapping1, MAP_DIO0_LORA_TXDONE|MAP_DIO1_LORA_NOP|MAP_DIO2_LORA_NOP);
-    // clear all radio IRQ flags
-    writeReg(LORARegIrqFlags, 0xFF);
-    // mask all IRQs but TxDone
-    writeReg(LORARegIrqFlagsMask, ~IRQ_LORA_TXDONE_MASK);
-
-    // initialize the payload size and address pointers
-    writeReg(LORARegFifoTxBaseAddr, 0x00);
-    writeReg(LORARegFifoAddrPtr, 0x00);
-    writeReg(LORARegPayloadLength, LMIC.dataLen);
-
-#ifdef NOTUSED
+#define MANUAL_UPDATE
+#ifdef MANUAL_UPDATE
     //  TP-IoT: Fixed constants according to http://www.hoperf.com/upload/rf/RFM95_96_97_98W.pdf
     const int FIXED_RH_RF95_BW_125KHZ                             = 0x70;
     const int FIXED_RH_RF95_BW_250KHZ                             = 0x80;
@@ -546,15 +542,47 @@ static void txlora () {
     }
 #endif
 
+    ////////////////////////////////////////////////////////////////
+
+    // configure output power
+    writeReg(RegPaRamp, (readReg(RegPaRamp) & 0xF0) | 0x08); // set PA ramp-up time 50 uSec
+    configPower();
+
+#define TPIOT_SYNC_WORD
+#ifdef TPIOT_SYNC_WORD
+    //  TP-IoT sync word.  Must set or will not receive.
+    const int RH_RF69_REG_39_NODEADRS                             = 0x39;
+    writeReg(RH_RF69_REG_39_NODEADRS, 0x12);
+    writeReg(0xB, 0x3B);  //  RegOcp: Binary 0011 1011: OCP enabled (001), OCP trim = 0x1B
+    writeReg(0xC, 0x23);  //  RegLna: Binary 0010 0011: LnaGain = Max Gain (001), Lna Boost = On 150% current (bin 11)
+    writeReg(0x8, 0xCC);  //  RegFrLsb. Must be set in idle mode.
+    writeReg(0x1F, 0xFF);  //  RegSymbTimeoutLsb
+    writeReg(0x24, 0x00);  //  RegHopPeriod: Disable hopping.
+#else
+    // set sync word
+    writeReg(LORARegSyncWord, LORA_MAC_PREAMBLE);
+#endif  //  TPIOT_SYNC_WORD
+
+#ifdef NOTUSED
     //  TP-IoT: Preamble length 8.
     const int RH_RF95_REG_20_PREAMBLE_MSB                         = 0x20;
     const int RH_RF95_REG_21_PREAMBLE_LSB                         = 0x21;
     const int preamble_length = 8;
     writeReg(RH_RF95_REG_20_PREAMBLE_MSB, preamble_length >> 8);
     writeReg(RH_RF95_REG_21_PREAMBLE_LSB, preamble_length & 0xff);
-    //  TP-IoT sync.
-    const int RH_RF69_REG_39_NODEADRS                             = 0x39;
-    writeReg(RH_RF69_REG_39_NODEADRS, 0x12);
+#endif
+
+    // set the IRQ mapping DIO0=TxDone DIO1=NOP DIO2=NOP
+    writeReg(RegDioMapping1, MAP_DIO0_LORA_TXDONE|MAP_DIO1_LORA_NOP|MAP_DIO2_LORA_NOP);
+    // clear all radio IRQ flags
+    writeReg(LORARegIrqFlags, 0xFF);
+    // mask all IRQs but TxDone
+    writeReg(LORARegIrqFlagsMask, ~IRQ_LORA_TXDONE_MASK);
+
+    // initialize the payload size and address pointers
+    writeReg(LORARegFifoTxBaseAddr, 0x00);
+    writeReg(LORARegFifoAddrPtr, 0x00);
+    writeReg(LORARegPayloadLength, LMIC.dataLen);
 
     // download buffer to the radio FIFO
     writeBuf(RegFifo, LMIC.frame, LMIC.dataLen);
