@@ -35,15 +35,34 @@ byte str[21] = {'H','o','p','e','R','F',' ','R','F','M',' ','C','O','B','R','F',
 void setup()
 {
  radio.Modulation     = LORA;
- radio.COB            = RFM98;
- radio.Frequency      = 434000;
+ ////radio.COB        = RFM98;
+ radio.COB            = RFM96;  ////  TP-IoT: RFM96
+
+ // Set center frequency
+ ////uint32_t  freq = 868100000; // in Mhz! (868.1)
+ ////  TP-IoT: uint32_t LORA_CH_10_868 = CH_10_868; //  0xD84CCC; // channel 10, central freq = 865.20MHz  ////  Lup Yuen
+
+ ////radio.Frequency  = 434000;
+ radio.Frequency      = 865200; ////  TP-IoT: 865.20 MHz
  radio.OutputPower    = 17;             //17dBm OutputPower
- radio.PreambleLength = 16;             //16Byte preamble
+ ////radio.PreambleLength = 16;             //16Byte preamble
+ radio.PreambleLength = 8;             //  TP-IoT: 8 Byte preamble
  radio.FixedPktLength = false;          //explicit header mode for LoRa
  radio.PayloadLength  = 21;
  radio.CrcDisable     = true;
+ for (int i = 0; i < 8; i++)
+  radio.SyncWord[i] = 0x12;  ////  TP-IoT
 
- radio.SFSel          = SF9;
+  ////  Mode 1 is max range but does NOT work with Dragino shield and Hope RF96 chip.
+  ////  TP-IoT Gateway runs on:
+  ////    case 1:     setCR(CR_5);        // CR = 4/5
+  ////                setSF(SF_12);       // SF = 12
+  ////                setBW(BW_125);      // BW = 125 KHz
+  //  TP-IoT Mode 1: Bw125Cr45Sf4096
+ ////radio.SFSel          = SF9;
+ ////radio.BWSel          = BW125K;
+ ////radio.CRSel          = CR4_5;
+ radio.SFSel          = SF12;
  radio.BWSel          = BW125K;
  radio.CRSel          = CR4_5;
 

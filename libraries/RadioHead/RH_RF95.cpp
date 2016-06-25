@@ -158,6 +158,12 @@ bool RH_RF95::init()
     ////  TP-IoT: uint32_t LORA_CH_10_868 = CH_10_868; //  0xD84CCC; // channel 10, central freq = 865.20MHz  ////  Lup Yuen
     setFrequency(865.20); ////  TP-IoT
 
+    int tmp = 0x04;  //AGC ON
+    if (transmission_mode == 1) //  Low Data Rate Optimisation mandated for when the symbol length exceeds 16ms
+        tmp |= 0x08;  //  Data will be scrambled if you don't use this.
+    const int RegModemConfig3 = 0x26;  // This is NOT DOCUMENTED! Got this from HopeDuino_LoRa.h, only for RFM96/7/8
+    spiWrite(RegModemConfig3, tmp);
+
 #define HIGH_POWER
 #ifdef HIGH_POWER
     ////  TP-IoT: TODO: Set power.

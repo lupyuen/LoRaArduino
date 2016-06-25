@@ -558,6 +558,12 @@ static void txlora () {
     writeReg(0x8, 0xCC);  //  RegFrLsb. Must be set in idle mode.
     writeReg(0x1F, 0xFF);  //  RegSymbTimeoutLsb
     writeReg(0x24, 0x00);  //  RegHopPeriod: Disable hopping.
+
+    int tmp = 0x04;  //AGC ON
+    if (transmission_mode == 1) //  Low Data Rate Optimisation mandated for when the symbol length exceeds 16ms
+        tmp |= 0x08;  //  Data will be scrambled if you don't use this.
+    const int RegModemConfig3 = 0x26;  // This is NOT DOCUMENTED! Got this from HopeDuino_LoRa.h, only for RFM96/7/8
+    writeReg(RegModemConfig3, tmp);
 #else
     // set sync word
     writeReg(LORARegSyncWord, LORA_MAC_PREAMBLE);

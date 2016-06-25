@@ -29,6 +29,19 @@
 	#define HopeDuino_SPI_h
 	#include <avr/io.h>
 
+//  TP-IoT Pin mapping
+/*
+const lmic_pinmap lmic_pins = {
+    .nss = 10,// Connected to pin D10
+    .rxtx = LMIC_UNUSED_PIN,// For placeholder only, Do not connected on RFM92/RFM95
+    .rst = 9,// Needed on RFM92/RFM95? (probably not)
+    .dio = {2, 6, 7},// Specify pin numbers for DIO0, 1, 2 connected to D2, D6, D7
+};
+*/
+#define nSS_Value 10
+#define nSS_Port  PORTB
+#define nSS_Dir   DDRB
+
 	#ifndef nSS_Value
 		#warning "Does not define nSS_Value/nSS_Port/nSS_Dir! Default setting PortB_4 for nSS."
 		#define	nSS_Value	0x04
@@ -46,9 +59,13 @@
 
 	/** Hardware brief **/    
 	//PORTB						//DDRx		PORTx		PINx
-	#define	_SDI     0x08       // 1          1          0
-	#define	_SDO     0x10		// 0          0          1
-	#define	_SCK	 0x20		// 1          0          0
+	//#define	_SDI     0x08       // 1          1          0
+	//#define	_SDO     0x10		// 0          0          1
+	//#define	_SCK	 0x20		// 1          0          0
+	////  TP-IoT: .dio = {2, 6, 7},// Specify pin numbers for DIO0, 1, 2 connected to D2, D6, D7
+	#define	_SDI     2
+	#define	_SDO     6
+	#define	_SCK	 7
 
 	#define	SetnSS()	(nSS_Port |= nSS_Value)
 	#define	ClrnSS()	(nSS_Port &= (~nSS_Value))
