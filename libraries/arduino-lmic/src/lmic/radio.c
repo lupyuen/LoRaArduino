@@ -475,26 +475,18 @@ static void txlora () {
     // enter standby mode (required for FIFO loading))
     opmode(OPMODE_STANDBY);
 
-      ////  TP-IoT: Mode 1 is max range but does NOT work with Dragino shield and Hope RF96 chip.
-  ////  TP-IoT Gateway runs on:
-  ////    case 1:     setCR(CR_5);        // CR = 4/5
-  ////                setSF(SF_12);       // SF = 12
-  ////                setBW(BW_125);      // BW = 125 KHz
-  //  TP-IoT Mode 1: Bw125Cr45Sf4096
-  //writeReg(LORARegModemConfig1, FIXED_RH_RF95_BW_125KHZ + FIXED_RH_RF95_CODING_RATE_4_5);
-  //writeReg(LORARegModemConfig2, RH_RF95_SPREADING_FACTOR_4096CPS /* + FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON */);
-
-  setCr(LMIC.rps, CR_4_5);
-  setSf(LMIC.rps, SF12);
-  setBw(LMIC.rps, BW125);
+    ////  TP-IoT: Doesn't work.
+    //setCr(LMIC.rps, CR_4_5);
+    //setSf(LMIC.rps, SF12);
+    //setBw(LMIC.rps, BW125);
 
     // configure LoRa modem (cfg1, cfg2)
     configLoraModem();
     // configure frequency
     configChannel();
 
-#define MANUAL_UPDATE
-#ifdef MANUAL_UPDATE
+#define TPIOT
+#ifdef TPIOT
     //  TP-IoT: Fixed constants according to http://www.hoperf.com/upload/rf/RFM95_96_97_98W.pdf
     const int FIXED_RH_RF95_BW_125KHZ                             = 0x70;
     const int FIXED_RH_RF95_BW_250KHZ                             = 0x80;
@@ -514,25 +506,12 @@ static void txlora () {
     extern int transmission_mode;
     switch (transmission_mode) {
         case 1: {
-            ////  Mode 1 is max range but does NOT work with Dragino shield and Hope RF96 chip.
-            ////  TP-IoT Gateway runs on:
+            ////  Mode 1 is max range.  TP-IoT Gateway runs on:
             ////    case 1:     setCR(CR_5);        // CR = 4/5
             ////                setSF(SF_12);       // SF = 12
             ////                setBW(BW_125);      // BW = 125 KHz
-            //  TP-IoT Mode 1: Bw125Cr45Sf4096
             writeReg(LORARegModemConfig1, FIXED_RH_RF95_BW_125KHZ + FIXED_RH_RF95_CODING_RATE_4_5);
             writeReg(LORARegModemConfig2, RH_RF95_SPREADING_FACTOR_4096CPS /* + FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON */);
-            break;
-        }
-        case 5: {
-            ////  Testing TP-IoT Gateway on mode 5 (better reach, medium time on air)
-            ////  Works with Dragino shield and Hope RF96 chip.
-            ////    case 5:     setCR(CR_5);        // CR = 4/5
-            ////                setSF(SF_10);       // SF = 10
-            ////                setBW(BW_250);      // BW = 250 KHz -> 0x80
-            //  TP-IoT Mode 5: Bw250Cr45Sf1024
-            writeReg(LORARegModemConfig1, FIXED_RH_RF95_BW_250KHZ + FIXED_RH_RF95_CODING_RATE_4_5);
-            writeReg(LORARegModemConfig2, RH_RF95_SPREADING_FACTOR_1024CPS /* + FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON */);
             break;
         }
         default:
@@ -540,9 +519,7 @@ static void txlora () {
             //Serial.print("Unknown transmission_mode ");
             //Serial.println(transmission_mode);
     }
-#endif
-
-    ////////////////////////////////////////////////////////////////
+#endif  //  TPIOT
 
     // configure output power
     writeReg(RegPaRamp, (readReg(RegPaRamp) & 0xF0) | 0x08); // set PA ramp-up time 50 uSec

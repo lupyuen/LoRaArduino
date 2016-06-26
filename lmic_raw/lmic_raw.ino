@@ -14,21 +14,11 @@
  *******************************************************************************/
 
 extern int transmission_mode;
-////  TP-IoT: Mode 1 is max range but does NOT work with Dragino shield and Hope RF96 chip.
-////  TP-IoT Gateway runs on:
+////  TP-IoT: Mode 1 is max range. TP-IoT Gateway runs on:
 ////    case 1:     setCR(CR_5);        // CR = 4/5
 ////                setSF(SF_12);       // SF = 12
 ////                setBW(BW_125);      // BW = 125 KHz
-//setModemConfig(Bw125Cr45Sf4096);  ////  TP-IoT Mode 1
 int transmission_mode = 1;
-
-////  Testing TP-IoT Gateway on mode 5 (better reach, medium time on air)
-////  Works with Dragino shield and Hope RF96 chip.
-////    case 5:     setCR(CR_5);        // CR = 4/5
-////                setSF(SF_10);       // SF = 10
-////                setBW(BW_250);      // BW = 250 KHz -> 0x80
-//setModemConfig(Bw250Cr45Sf1024);  ////  TP-IoT Mode 5
-//int transmission_mode = 5;
 
 #include <lmic.h>
 #include <hal/hal.h>
@@ -177,19 +167,6 @@ void setup() {
   // This sets CR 4/5, BW125 (except for DR_SF7B, which uses BW250)
   LMIC.rps = updr2rps(LMIC.datarate);
 
-  ////  TP-IoT: Mode 1 is max range but does NOT work with Dragino shield and Hope RF96 chip.
-  ////  TP-IoT Gateway runs on:
-  ////    case 1:     setCR(CR_5);        // CR = 4/5
-  ////                setSF(SF_12);       // SF = 12
-  ////                setBW(BW_125);      // BW = 125 KHz
-  //  TP-IoT Mode 1: Bw125Cr45Sf4096
-  //writeReg(LORARegModemConfig1, FIXED_RH_RF95_BW_125KHZ + FIXED_RH_RF95_CODING_RATE_4_5);
-  //writeReg(LORARegModemConfig2, RH_RF95_SPREADING_FACTOR_4096CPS /* + FIXED_RH_RF95_RX_PAYLOAD_CRC_IS_ON */);
-
-  setCr(LMIC.rps, CR_4_5);
-  setSf(LMIC.rps, SF12);
-  setBw(LMIC.rps, BW125);
-    
   Serial.println("Started");
   Serial.flush();
 
