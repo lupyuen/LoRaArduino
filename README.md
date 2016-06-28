@@ -52,8 +52,7 @@ http://www.seeedstudio.com/item_detail.html?p_id=2651
 > LowDataRateOptimize increases the robustness of the LoRa link at these low effective data rates, its use is mandated with
 > **spreading factors of 11 and 12 at 125 kHz bandwidth.**
 
-Hope RFM96 seems to be derived from the Semtech SX1276: http://www.semtech.com/images/datasheet/sx1276.pdf.  Although not documented, Hope RFM96 supports the Low Data Rate Optimization setting in RegModemConfig3 (register 0x26) exactly the same way as the SX1276.  See Page 114 of the SX1276 datasheet.  I confirmed this by checking the Hope library code (HoepRF_HSP_V1.0\libraries\HopeRFLib\HopeDuino_LoRa.cpp) at http://www.hoperf.com/demo_tools/419.html
-
+Hope RFM96 seems to be derived from the Semtech SX1276: http://www.semtech.com/images/datasheet/sx1276.pdf.  Although not documented, Hope RFM96 (but not RFM95) supports the Low Data Rate Optimization setting in RegModemConfig3 (register 0x26) exactly the same way as the SX1276.  See Page 114 of the SX1276 datasheet.  I confirmed this by checking the Hope library code (HoepRF_HSP_V1.0\libraries\HopeRFLib\HopeDuino_LoRa.cpp) at http://www.hoperf.com/demo_tools/419.html
 
 ## LoRa Gateway
 
