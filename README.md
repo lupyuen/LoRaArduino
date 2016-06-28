@@ -61,7 +61,7 @@ The software running on the Raspberry Pi + Libelium/Dragino shields to function 
 
 https://github.com/lupyuen/RaspberryPiImage/tree/master/home/pi/LoRa
 
-Run `run_lora_gateway.sh` to start the gateway.  Run `stop_lora.sh` to stop the gatewat.
+Run `run_lora_gateway.sh` to start the gateway.  Run `stop_lora.sh` to stop the gateway.
  
 Check the installation instructions for LoRa gateway and LoRa node on Raspberry Pi here:
 
