@@ -16,12 +16,12 @@ LoRa is not suitable for applications that require constant, lossless bandwidth.
 
 - Arduino sketch and libraries for Dragino LoRa shield:
 
-**[rf95_client.ino](https://github.com/lupyuen/LoRaArduino/blob/master/rf95_client/rf95_client.ino)**
+**[send_receive_sensor_data.ino](https://github.com/lupyuen/LoRaArduino/blob/master/send_receive_sensor_data/send_receive_sensor_data.ino)**
 
-**[RadioHead](https://github.com/lupyuen/LoRaArduino/tree/master/libraries/RadioHead)**
+**[arduino-lmic](https://github.com/lupyuen/LoRaArduino/tree/master/libraries/arduino-lmic)**
 
 
-- Python node script for Libelium LoRa shield:
+- Raspberry Pi Python script for sensor node with Libelium LoRa shield and Dragino HAT:
 
 **[test_lora_interface.py](https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/test_lora_interface.py)**
 
@@ -36,15 +36,15 @@ https://www.cooking-hacks.com/sx1272-lora-shield-for-raspberry-pi-868-mhz
 
 https://www.cooking-hacks.com/lora-radio-shield-for-arduino-868-mhz
 
-- **Dragino LoRa shield for Arduino:** Cheaper than Libelium, based on Hope RF96 chip (licensed from Semtech) 
+- **Dragino LoRa GPS HAT for Raspberry Pi:** Cheaper than Libelium, based on Hope RFM96 chip (licensed from Semtech). **Note:** The Dragino HAT I tested had much shorter range than the Libelium shield, around 100 metres for the Dragino HAT in a dense area compared with a few hundred metres for the Libelium shield. Maybe I didn't configure the Dragino HAT correctly.
+
+http://wiki.dragino.com/index.php?title=Lora/GPS_HAT
+
+- **Dragino LoRa shield for Arduino:** Cheaper than Libelium, based on Hope RFM96 chip.  Works fine for long distances.
 
 http://www.seeedstudio.com/item_detail.html?p_id=2651
 
-**Note:** The Hope RF96 chip does not support Semtech's **Low Data Rate Optimization** (supported by Semtech SX1272 and SX1276)
-so we won't be able to use LoRa Mode 1 for maximum range, minimum bandwidth transmission.  If the coding scheme were documented,
-we should be able to support all modes on Hope RF96.
-
-Refer to Page 28 of Semtech SX1272 Datasheet: http://www.semtech.com/images/datasheet/sx1272.pdf
+**Note:** Although not documented, the Hope RFM96 actually supports Semtech's **Low Data Rate Optimization** (supported by Semtech SX1272 and SX1276) so we can use LoRa Mode 1 for maximum range, minimum bandwidth transmission.  Refer to Page 28 of Semtech SX1272 Datasheet: http://www.semtech.com/images/datasheet/sx1272.pdf
 
 > **Low Data Rate Optimization**
 > Given the potentially long duration of the packet at high spreading factors the option is given to improve the robustness of
@@ -52,21 +52,16 @@ Refer to Page 28 of Semtech SX1272 Datasheet: http://www.semtech.com/images/data
 > LowDataRateOptimize increases the robustness of the LoRa link at these low effective data rates, its use is mandated with
 > **spreading factors of 11 and 12 at 125 kHz bandwidth.**
 
-Compare with the glaring omission of Low Data Rate Optimization in Page 25 of Hope RF96 Datasheet: http://www.hoperf.com/upload/rf/RFM95_96_97_98W.pdf
+Hope RFM96 seems to be derived from the Semtech SX1276: http://www.semtech.com/images/datasheet/sx1276.pdf.  Hope RFM96 supports the Low Data Rate Optimization setting in RegModemConfig3 (register 0x26) exactly the same way as the SX1276.  See Page 114 of the SX1276 datasheet.
 
-Spreading factors 11/12 and 125 kHz bandwidth are needed for maximum range, minimum bandwidth transmission.
-
-Hope RF96 seems to be derived from the Semtech SX1276: http://www.semtech.com/images/datasheet/sx1276.pdf
-
-- **To be tested: Dragino LoRa shield for Raspberry Pi,** based on Hope RF96 chip
-
-http://wiki.dragino.com/index.php?title=Lora/GPS_HAT
 
 ## LoRa Gateway
 
-The software running on the Raspberry Pi + Libelium shield to function as a LoRa gateway is here:
+The software running on the Raspberry Pi + Libelium/Dragino shields to function as a LoRa gateway is here:
 
 https://github.com/lupyuen/RaspberryPiImage/tree/master/home/pi/LoRa
+
+Run `run_lora_gateway.sh` to start the gateway.  Run `stop_lora.sh` to stop the gatewat.
  
 Check the installation instructions for LoRa gateway and LoRa node on Raspberry Pi here:
 
@@ -83,28 +78,8 @@ This mode offers the longest range.  It's supported **only on Libelium sheids** 
 
 Set `transmission_mode = 1` in [lora_gateway.py](https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/lora_gateway.py),
 [SX_01a_TX_LoRa.ino](https://github.com/lupyuen/LoRaArduino/blob/master/SX_01a_TX_LoRa/SX_01a_TX_LoRa.ino),
-[RH_RF95.cpp](https://github.com/lupyuen/LoRaArduino/blob/master/libraries/RadioHead/RH_RF95.cpp)
+[send_receive_sensor_data.ino](https://github.com/lupyuen/LoRaArduino/blob/master/send_receive_sensor_data/send_receive_sensor_data.ino)
 and [test_lora_interface.py](https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/test_lora_interface.py)
-
-- **Mode 5:** Bandwidth = 250 KHz, Coding Rate = 4/5, Spreading Factor = 10
-
-This mode supported on Libelium sheids and Dragino shields for Raspberry Pi / Arduino because it doesn't use Low Data Rate Optimization.
-
-Set `transmission_mode = 5` in [lora_gateway.py](https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/lora_gateway.py),
-[SX_01a_TX_LoRa.ino](https://github.com/lupyuen/LoRaArduino/blob/master/SX_01a_TX_LoRa/SX_01a_TX_LoRa.ino),
-[RH_RF95.cpp](https://github.com/lupyuen/LoRaArduino/blob/master/libraries/RadioHead/RH_RF95.cpp)
-and [test_lora_interface.py](https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/test_lora_interface.py)
-
-
-- What happens when you send a data packet from the Dragino shield in Mode 1?
-
-The Libelium shield only receives the first 3 bytes intact, the rest of the message is scrambled.  Compare these logs:
-
-https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/arduino_dragino.log
-
-https://github.com/lupyuen/RaspberryPiImage/blob/master/home/pi/LoRa/arduino_libelium.log
-
-Can we use this to send tiny packets?
 
 ## Photos
 
@@ -124,15 +99,27 @@ _Integration of LoRa Node to Slack via LoRa Gateway, AWS IoT Rules Engine and AW
 
 ## External Libraries
 
-- Code for the Libelium LoRa shield is based on:
+- Code for the Libelium Arduino and Raspberry Pi shields is based on:
 
 https://www.cooking-hacks.com/documentation/tutorials/extreme-range-lora-sx1272-module-shield-arduino-raspberry-pi-intel-galileo/ 
 
-- Code for the Dragino LoRa shield is based on Radiohead RH_RF95:
+- Code for the Dragino Raspberry Pi HAT is based on the LoRaWAN Single Channel Packet Forwarder:
+
+https://github.com/tftelkamp/single_chan_pkt_fwd
+
+- Code for the Dragino Arduino shield is based on Arduino LMIC for LoRaWAN:
+
+https://github.com/matthijskooijman/arduino-lmic
+
+- The Dragino LoRa shield was previously running on the RadioHead library but it seemed too complicated.
 
 http://www.airspayce.com/mikem/arduino/RadioHead/
 
 ## References
+
+- Dragino setup for Arduino and Raspberry Pi:
+
+http://www.instructables.com/id/Use-Lora-Shield-and-RPi-to-Build-a-LoRaWAN-Gateway/?ALLSTEPS
 
 - Research project on the same topic:
 
