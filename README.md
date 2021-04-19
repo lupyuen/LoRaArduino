@@ -1,3 +1,7 @@
+# UPDATE: This code is obsolete, please use this instead: https://github.com/mcci-catena/arduino-lmic
+
+[__I'm now working on LoRa for the BL602 RISC-V SoC, check this out__](https://lupyuen.github.io/articles/lora2)
+
 # LoRaArduino
 Arduino code for connecting to LoRa IoT gateway at Temasek Polytechnic 
 
